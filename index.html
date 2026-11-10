@@ -2,1054 +2,467 @@
 <html lang="fr" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GHARBI AGENCY | Gharbi Aziz — Video Editing & Creative Ads</title>
-  <meta name="author" content="Gharbi Aziz" />
-  <meta name="description" content="Gharbi Aziz — Fondateur de GHARBI AGENCY. Expert en creative ads Meta Ads et montage vidéo haute conversion." />
-  <meta property="og:title" content="GHARBI AGENCY | Gharbi Aziz — Creative Ads Expert" />
-  <meta property="og:description" content="Des creatives Meta Ads pensées pour scaler votre e-commerce." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>GHARBI AGENCY — Creative Ads Studio · Tunisia</title>
+  <meta name="author" content="Gharbi Aziz — GHARBI AGENCY" />
+  <meta name="description" content="GHARBI AGENCY — studio de creatives Meta Ads, UGC, VSL et montage vidéo haute conversion pour les marques e-commerce. Fondé par Gharbi Aziz, Tunisie." />
+  <meta name="theme-color" content="#050506" />
+  <meta property="og:title" content="GHARBI AGENCY — Creative Ads Studio" />
+  <meta property="og:description" content="Des creatives Meta Ads qui stoppent le scroll et scalent votre e-commerce." />
   <meta property="og:type" content="website" />
+  <meta property="og:image" content="media/logo_banner_agency.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
   <link rel="icon" type="image/png" href="media/logo_icon.png" />
 
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Cairo:wght@700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300..700&family=JetBrains+Mono:wght@400;500&family=Alexandria:wght@400;600;800;900&display=swap" rel="stylesheet" />
 
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preload" href="media/gh-logo.svg" as="fetch" crossorigin />
+  <link rel="stylesheet" href="style.css?v=2026.11" />
 
-  <link rel="stylesheet" href="style.css?v=20261031-01" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three/three.module.js",
+      "three/addons/": "./vendor/three/addons/"
+    }
+  }
+  </script>
 </head>
-<body>
+<body class="is-loading">
+
+  <!-- ========== WEBGL STAGE ========== -->
+  <canvas id="webgl" class="webgl" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
 
   <!-- ========== CURSOR ========== -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-follower" id="cursor-follower"></div>
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <span class="cursor-dot"></span>
+    <span class="cursor-ring"><span class="cursor-label" id="cursor-label">Play</span></span>
+  </div>
 
   <!-- ========== LOADER ========== -->
-  <div class="loader" id="loader">
-    <div class="loader-inner">
-      <img src="media/logo_icon.png" alt="Gharbi Agency" class="loader-logo-img" />
-      <div class="loader-bar"><div class="loader-bar-fill"></div></div>
-      <p class="loader-text">Gharbi Agency — Portfolio</p>
+  <div class="loader" id="loader" role="status" aria-live="polite">
+    <div class="loader-logo">
+      <img src="media/gh-logo.svg" alt="" />
     </div>
+    <div class="loader-meta">
+      <span>GHARBI AGENCY</span>
+      <span class="loader-count"><b id="loader-pct">00</b>%</span>
+    </div>
+    <div class="loader-bar"><i id="loader-bar"></i></div>
   </div>
 
   <!-- ========== NAV ========== -->
-  <header class="navbar" id="navbar">
-    <div class="nav-container">
-      <a href="#hero" class="nav-logo" id="nav-logo-link">
-        <img src="media/logo_icon.png" alt="Gharbi Agency" class="nav-logo-img" />
-        <span class="logo-text">Gharbi Agency</span>
-      </a>
-      <nav class="nav-links" id="nav-links">
-        <a href="#about" class="nav-link">À propos</a>
-        <a href="#services" class="nav-link">Services</a>
-        <a href="#portfolio" class="nav-link">Portfolio</a>
-        <a href="#testimonials" class="nav-link">Avis Clients</a>
-        <a href="#contact" class="nav-link nav-cta">Travailler avec moi →</a>
-      </nav>
-      <button class="nav-burger" id="nav-burger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
+  <header class="nav" id="nav">
+    <a href="#top" class="nav-brand" aria-label="Gharbi Agency — accueil">
+      <img src="media/gh-logo.svg" alt="" width="28" height="28" />
+      <span>Gharbi <em>Agency</em></span>
+    </a>
+    <nav class="nav-links" aria-label="Navigation principale">
+      <a href="#about">Agence</a>
+      <a href="#services">Services</a>
+      <a href="#work">Portfolio</a>
+      <a href="#proof">Résultats</a>
+    </nav>
+    <a href="#contact" class="nav-cta magnetic"><span>Démarrer un projet</span><i>→</i></a>
+    <button class="nav-burger" id="nav-burger" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button>
   </header>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="#about" class="mobile-link">À propos</a>
-    <a href="#services" class="mobile-link">Services</a>
-    <a href="#portfolio" class="mobile-link">Portfolio</a>
-    <a href="#testimonials" class="mobile-link">Avis Clients</a>
-    <a href="#contact" class="mobile-link highlight">Travailler avec moi →</a>
+  <div class="menu" id="menu" aria-hidden="true">
+    <nav>
+      <a href="#about" data-i="01">Agence</a>
+      <a href="#services" data-i="02">Services</a>
+      <a href="#work" data-i="03">Portfolio</a>
+      <a href="#proof" data-i="04">Résultats</a>
+      <a href="#contact" data-i="05">Contact</a>
+    </nav>
+    <div class="menu-foot">
+      <a href="https://wa.me/21697427727" target="_blank" rel="noreferrer">WhatsApp ↗</a>
+      <a href="https://www.instagram.com/gharbi_editor/?hl=en" target="_blank" rel="noreferrer">Instagram ↗</a>
+    </div>
   </div>
 
-  <!-- ========== FULLSCREEN POSTER COVER ========== -->
-  <section id="cover" class="fullscreen-poster-section">
-    <div class="poster-ambient-glow" aria-hidden="true"></div>
-    <div class="poster-fullbg" id="poster-fullbg"></div>
-    <div class="poster-light-sweep"></div>
-    <div class="poster-particles" id="poster-particles"></div>
-    <a href="#intro-bar" class="poster-scroll-btn" aria-label="Défiler vers le contenu">
-      <span>Explorer</span>
-      <i data-lucide="chevron-down" aria-hidden="true"></i>
-    </a>
-  </section>
+  <main id="top">
 
-  <!-- ========== INTRO BAR (JUSTE APRES L'AFFICHE) ========== -->
-  <section id="intro-bar" class="intro-bar-section">
-    <div class="container">
-      <div class="intro-bar-card">
-        <div class="poster-badge poster-badge-anim">
-          <span class="badge-dot"></span>
-          <span>GHARBI AGENCY · STUDIO OFFICIEL</span>
-        </div>
-        <p class="intro-bar-text">
-          Montage Vidéo Cinématique &amp; Publicités Créatives Hautes Performances
-        </p>
-        <div class="intro-bar-actions">
-          <a href="#portfolio" class="btn btn-primary">
-            <i data-lucide="play" aria-hidden="true"></i>
-            Voir les Créations
-          </a>
-          <a href="https://wa.me/21697427727?text=Bonjour%20Gharbi%20Aziz%2C%20je%20souhaite%20collaborer%20avec%20GHARBI%20AGENCY." target="_blank" rel="noreferrer" class="btn btn-outline">
-            <i data-lucide="message-circle" aria-hidden="true"></i>
-            WhatsApp Direct
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- ========== HERO (scroll-driven 3D) ========== -->
+    <section class="hero" id="hero">
+      <div class="hero-sticky">
 
-  <!-- ========== HERO ========== -->
-  <section id="hero" class="hero">
-    <div class="hero-bg">
-      <div class="hero-orb orb-1"></div>
-      <div class="hero-orb orb-2"></div>
-      <div class="hero-orb orb-3"></div>
-      <div class="hero-grid"></div>
-    </div>
-
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        <span>#1 Creative Ads Agency — Tunisia</span>
-      </div>
-      <h1 class="hero-title hero-title-arabic" dir="rtl">
-        <span class="hero-line">تجارة <span class="gradient-text">عليك</span></span>
-        <span class="hero-line">والفيديوهات <span class="gradient-text">علينا</span></span>
-      </h1>
-      <p class="hero-subtitle">
-        Gharbi Aziz — Fondateur de <strong>GHARBI AGENCY</strong><br/>
-        Des creatives <span class="highlight-accent">Meta Ads</span> qui stoppent le scroll et explosent vos conversions.
-      </p>
-      <div class="hero-actions">
-        <a href="#portfolio" class="btn btn-primary">
-          <i data-lucide="play" aria-hidden="true"></i>
-          Voir mon travail
-        </a>
-        <a href="#contact" class="btn btn-outline">
-          Démarrer un projet
-          <i data-lucide="arrow-right" aria-hidden="true"></i>
-        </a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-num" data-target="50">0</span><span class="stat-suffix">+</span>
-          <span class="stat-label">Clients servis</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
-          <span class="stat-num" data-target="200">0</span><span class="stat-suffix">+</span>
-          <span class="stat-label">Vidéos produites</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
-          <span class="stat-num" data-target="48">0</span><span class="stat-suffix">h</span>
-          <span class="stat-label">Délai livraison</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="hero-scroll">
-      <span>Défiler</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <!-- ========== BRANDS TICKER ========== -->
-  <section class="brands-section" aria-label="Marques partenaires">
-    <p class="brands-label">Ils nous ont fait confiance &amp; ont scalé avec nous</p>
-    <div class="brands-ticker">
-      <div class="ticker-track">
-        <span class="brand-item">Diabex</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Asses</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Movari</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">BioFeel</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Bioyra</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Herbavie</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Cynos</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Imabio</span>
-        <span class="brand-sep">•</span>
-        <!-- Duplicated track for infinite smooth scroll -->
-        <span class="brand-item">Diabex</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Asses</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Movari</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">BioFeel</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Bioyra</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Herbavie</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Cynos</span>
-        <span class="brand-sep">•</span>
-        <span class="brand-item">Imabio</span>
-        <span class="brand-sep">•</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== ABOUT ========== -->
-  <section id="about" class="section about-section">
-    <div class="container">
-      <div class="about-grid">
-        <div class="about-image-col reveal">
-          <div class="about-image-wrap">
-            <div class="about-image-placeholder">
-              <img src="media/logo_icon.png" alt="Gharbi Agency Logo" class="about-logo-img" />
-              <div class="about-img-rings">
-                <div class="ring ring-1"></div>
-                <div class="ring ring-2"></div>
-                <div class="ring ring-3"></div>
-              </div>
-            </div>
-            <div class="about-banner-wrap">
-              <img src="media/logo_banner.png" alt="Gharbi Agency Banner" class="about-banner-img" />
-            </div>
-            <div class="about-badge-float badge-exp">
-              <i data-lucide="award"></i>
-              <div>
-                <strong>2+ ans</strong>
-                <span>d'expérience</span>
-              </div>
-            </div>
-            <div class="about-badge-float badge-rate">
-              <i data-lucide="trending-up"></i>
-              <div>
-                <strong>ROAS x4</strong>
-                <span>en moyenne</span>
-              </div>
+        <div class="hero-stage stage-1" data-stage="1">
+          <div class="hero-kicker">
+            <span class="live-dot"></span>
+            <span>GHARBI AGENCY · Creative Ads Studio — Tunisia 🇹🇳</span>
+          </div>
+          <h1 class="hero-ar" dir="rtl" lang="ar">
+            <span class="line"><span>تجارة <b>عليك</b></span></span>
+            <span class="line"><span>والفيديوهات <b>علينا</b></span></span>
+          </h1>
+          <div class="hero-bottom">
+            <p class="hero-sub">Des creatives <em>Meta Ads</em> qui stoppent le scroll<br/>et transforment les viewers en buyers.</p>
+            <div class="hero-actions">
+              <a href="#work" class="btn btn-solid magnetic"><span>Voir les créations</span></a>
+              <a href="https://wa.me/21697427727?text=Bonjour%20GHARBI%20AGENCY%2C%20je%20souhaite%20lancer%20un%20projet." target="_blank" rel="noreferrer" class="btn btn-ghost magnetic"><span>WhatsApp direct</span></a>
             </div>
           </div>
         </div>
-        <div class="about-text-col reveal">
-          <span class="eyebrow">À propos de moi</span>
-          <h2 class="section-title">
-            Je suis <span class="gradient-text">Gharbi Aziz</span>,<br/>Fondateur de GHARBI AGENCY
-          </h2>
-          <p class="about-desc">
-            Passionné par le montage vidéo et la création publicitaire, j'ai fondé <strong>GHARBI AGENCY</strong> avec une mission claire : aider les marques e-commerce tunisiennes et internationales à générer de vrais résultats grâce à des creatives vidéo qui <em>convertissent</em>.
-          </p>
-          <p class="about-desc" dir="rtl" style="text-align: right; font-family: 'Space Grotesk', sans-serif;">
-            بنينا GHARBI AGENCY باش نساعدو البيزنسات تكبّر مع creatives تستهدف العميل وتحوّله من viewer لـ buyer.
-          </p>
-          <div class="about-skills">
-            <div class="skill-tag"><i data-lucide="video"></i> Video Editing</div>
-            <div class="skill-tag"><i data-lucide="target"></i> Meta Ads</div>
-            <div class="skill-tag"><i data-lucide="target"></i> Meta Ads</div>
-            <div class="skill-tag"><i data-lucide="pen-tool"></i> Scriptwriting</div>
-            <div class="skill-tag"><i data-lucide="bar-chart-2"></i> Growth Strategy</div>
-            <div class="skill-tag"><i data-lucide="layers"></i> UGC Content</div>
-          </div>
-          <div class="about-cta-row">
-            <a href="#contact" class="btn btn-primary">Me contacter</a>
-            <a href="https://wa.me/21697427727" target="_blank" rel="noreferrer" class="btn btn-ghost">
-              <i data-lucide="message-circle"></i>
-              WhatsApp
-            </a>
+
+        <div class="hero-stage stage-2" data-stage="2" aria-hidden="true">
+          <p class="stage-eyebrow">// 01 — Hook</p>
+          <h2 class="stage-title">On a <em>3 secondes.</em><br/>On les gagne.</h2>
+          <div class="stage-stats">
+            <div><b data-count="50">0</b><span>+</span><small>Clients servis</small></div>
+            <div><b data-count="200">0</b><span>+</span><small>Vidéos produites</small></div>
+            <div><b data-count="48">0</b><span>h</span><small>Délai livraison</small></div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ========== SERVICES ========== -->
-  <section id="services" class="section services-section">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="eyebrow">Ce que je fais</span>
-        <h2 class="section-title">
-          Des <span class="gradient-text">services</span> pensés<br/>pour votre croissance
-        </h2>
-        <p class="section-subtitle">
-          Tout ce dont vous avez besoin pour transformer votre contenu en machine à vendre.
-        </p>
-      </div>
-      <div class="services-grid">
-        <article class="service-card reveal" data-delay="0">
-          <div class="service-icon">
-            <i data-lucide="film"></i>
-          </div>
-          <span class="service-num">01</span>
-          <h3>Video Editing Premium</h3>
-          <p>Montage cinématique avec color grading, transitions fluides, et hooks visuels qui stoppent le scroll en moins de 3 secondes.</p>
-          <ul class="service-list">
-            <li><i data-lucide="check"></i> Livraison en 48h</li>
-            <li><i data-lucide="check"></i> Révisions illimitées</li>
-            <li><i data-lucide="check"></i> Format Multi-plateforme</li>
-          </ul>
-          <div class="service-tag">Meta Ads · Reels</div>
-        </article>
-
-        <article class="service-card reveal featured-service" data-delay="100">
-          <div class="service-badge">⭐ Populaire</div>
-          <div class="service-icon">
-            <i data-lucide="target"></i>
-          </div>
-          <span class="service-num">02</span>
-          <h3>Creatives Ads Complètes</h3>
-          <p>De la stratégie au montage final : scripts, hooks A/B testés, CTA optimisés, et creative briefs alignés sur votre audience.</p>
-          <ul class="service-list">
-            <li><i data-lucide="check"></i> Script + Storyboard</li>
-            <li><i data-lucide="check"></i> 3 hooks par vidéo</li>
-            <li><i data-lucide="check"></i> Analyse concurrentielle</li>
-          </ul>
-          <div class="service-tag">ROI · Conversion · Scale</div>
-        </article>
-
-        <article class="service-card reveal" data-delay="200">
-          <div class="service-icon">
-            <i data-lucide="users"></i>
-          </div>
-          <span class="service-num">03</span>
-          <h3>UGC & Content Strategy</h3>
-          <p>Contenu authentique style UGC, parfait pour créer de la confiance et augmenter votre taux de conversion sur Facebook et Meta Ads.</p>
-          <ul class="service-list">
-            <li><i data-lucide="check"></i> Stratégie de contenu</li>
-            <li><i data-lucide="check"></i> Édition de style natif</li>
-            <li><i data-lucide="check"></i> Social proof intégré</li>
-          </ul>
-          <div class="service-tag">Trust · UGC · Authentique</div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== PROCESS ========== -->
-  <section class="section process-section">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="eyebrow" dir="rtl">من المنتج لـ Creative</span>
-        <h2 class="section-title">
-          Comment on <span class="gradient-text">travaille</span>
-        </h2>
-      </div>
-      <div class="process-timeline">
-        <div class="process-step reveal">
-          <div class="step-number">01</div>
-          <div class="step-content">
-            <h3 dir="rtl">نفهمو المنتج والعرض</h3>
-            <p>On analyse votre produit, votre audience cible, vos concurrents, et on définit ensemble la meilleure angle créative pour votre marché.</p>
-          </div>
-          <div class="step-icon"><i data-lucide="search"></i></div>
+        <div class="hero-stage stage-3" data-stage="3" aria-hidden="true">
+          <p class="stage-eyebrow">// 02 — Scale</p>
+          <h2 class="stage-title">22 creatives.<br/><em>Une seule obsession :</em><br/>la conversion.</h2>
+          <p class="stage-hint">Survolez une vidéo dans l'anneau — cliquez pour la regarder.</p>
         </div>
-        <div class="process-connector"></div>
-        <div class="process-step reveal">
-          <div class="step-number">02</div>
-          <div class="step-content">
-            <h3 dir="rtl">Script إلي يضمن البيع</h3>
-            <p>On rédige les scripts et storyboards avec des hooks testés qui captent l'attention dans les 3 premières secondes — le moment critique.</p>
-          </div>
-          <div class="step-icon"><i data-lucide="pen-tool"></i></div>
-        </div>
-        <div class="process-connector"></div>
-        <div class="process-step reveal">
-          <div class="step-number">03</div>
-          <div class="step-content">
-            <h3 dir="rtl">نحضرو Creatives جاهزة</h3>
-            <p>Montage pro avec sound design, captions animés, color grading premium. Livrés en 48h, prêts à scaler vos campagnes Meta Ads.</p>
-          </div>
-          <div class="step-icon"><i data-lucide="video"></i></div>
+
+        <div class="hero-progress" aria-hidden="true">
+          <span>Scroll</span>
+          <div class="hero-progress-track"><i id="hero-progress"></i></div>
+          <span id="hero-stage-num">01/03</span>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========== PORTFOLIO ========== -->
-  <section id="portfolio" class="section portfolio-section">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="eyebrow">Mes créations</span>
-        <h2 class="section-title">
-          Portfolio <span class="gradient-text">Vidéo</span>
-        </h2>
-        <p class="section-subtitle" dir="rtl">
-          خدمات مخدومة باش توقف أي scroll وتجيب أعلى نسبة مبيعات للـ Brand متاعك.
-        </p>
-      </div>
-
-
-      <div class="portfolio-grid reveal">
-        <!-- ===== CATEGORY 1: UGC ===== -->
-        <!-- 1. UGC: Hedi Hook -->
-        <article class="portfolio-card featured-card" data-category="ugc" data-video="media/ugc_hedi.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/ugc_hedi_thumb.jpg" alt="UGC 16 - Hedi Hook" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 2. UGC: Dhekra Kbar -->
-        <article class="portfolio-card" data-category="ugc" data-video="media/dhekra_kabr.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/dhekra_kabr_thumb.jpg" alt="Creative - Dhekra Kbar" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 3. UGC: Ghiras Hook 2 -->
-        <article class="portfolio-card" data-category="ugc" data-video="media/ghiras_hook2.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/ghiras_hook2_thumb.jpg" alt="Ghiras - Hook 2 Creative" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- ===== CATEGORY 2: MASHUPS ===== -->
-        <!-- 4. Mashups: VD 1 Creative -->
-        <article class="portfolio-card featured-card" data-category="mashups" data-video="media/vd1_creative.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/vd1_creative_thumb.jpg" alt="VD 1 - Creative Premium" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 5. Mashups: Video Set -->
-        <article class="portfolio-card" data-category="mashups" data-video="media/video_set.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/video_set_thumb.jpg" alt="Video Set - Fast Cut Mashup" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 6. Mashups: Zan9a Store AI -->
-        <article class="portfolio-card" data-category="mashups" data-video="media/ai_zan9a_store.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/ai_zan9a_store_thumb.jpg" alt="Zan9a Store - Dynamic Mashup" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- ===== CATEGORY 3: VSL (Video Sales Letters) ===== -->
-        <!-- 7. VSL: Clarity Metzawjin -->
-        <article class="portfolio-card featured-card" data-category="vsl" data-video="media/clarity_metzawjin.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/clarity_metzawjin_thumb.jpg" alt="Clarity - Pack Metzawjin VSL" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 8. VSL: Clarity Story Hook -->
-        <article class="portfolio-card" data-category="vsl" data-video="media/clarity.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/clarity_thumb.jpg" alt="Clarity - Story Hook VSL" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 9. VSL: Dhekra Lel Bac -->
-        <article class="portfolio-card" data-category="vsl" data-video="media/dhekra_bac.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/dhekra_bac_thumb.jpg" alt="Dhekra - Lel Bac Hook" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 10. VSL: Dhekra L Sghar -->
-        <article class="portfolio-card" data-category="vsl" data-video="media/dhekra_sghar.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/dhekra_sghar_thumb.jpg" alt="Dhekra - L Sghar Hook" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- ===== CATEGORY 4: UGLY ADS ===== -->
-        <!-- 11. Ugly: Camera Sghar Hook -->
-        <article class="portfolio-card featured-card" data-category="ugly" data-video="media/camera_hook.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/camera_hook_thumb.jpg" alt="Camera - Sghar Hook" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 12. Ugly: Camera Abed Kbar Hook 1 -->
-        <article class="portfolio-card" data-category="ugly" data-video="media/camera_abed_hook1.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/camera_abed_hook1_thumb.jpg" alt="Camera - Abed Kbar Hook 1" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 13. Ugly: Camera Abed Kbar Hook 3 -->
-        <article class="portfolio-card" data-category="ugly" data-video="media/camera_abed_hook3.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/camera_abed_hook3_thumb.jpg" alt="Camera - Abed Kbar Hook 3" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 14. Ugly: Magnet Hook 3 -->
-        <article class="portfolio-card" data-category="ugly" data-video="media/magnet_hook3.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/magnet_hook3_thumb.jpg" alt="Video" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-                <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-              </div>
-          </div>
-        </article>
-
-        <!-- 15. New Video: UGC Badia Hook 3 -->
-        <article class="portfolio-card" data-category="ugc" data-video="media/ugc_badia_hook3.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/ugc_badia_hook3_thumb.jpg" alt="Video" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-              <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-            </div>
-          </div>
-        </article>
-
-        <!-- 16. New Video: VSL Hook 1 -->
-        <article class="portfolio-card" data-category="vsl" data-video="media/vsl_hook1.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/vsl_hook1_thumb.jpg" alt="Video" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-              <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-            </div>
-          </div>
-        </article>
-
-        <!-- 17. New Video: Sequence 07 -->
-        <article class="portfolio-card" data-category="mashups" data-video="media/sequence_07.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/sequence_07_thumb.jpg" alt="Video" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-              <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-            </div>
-          </div>
-        </article>
-
-        <!-- 18. New Video: C000 20 -->
-        <article class="portfolio-card" data-category="ugc" data-video="media/c000_20.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/c000_20_thumb.jpg" alt="Video" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-              <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-            </div>
-          </div>
-        </article>
-
-        <!-- 19. New Video: Mashup New 1 -->
-        <article class="portfolio-card" data-category="mashups" data-video="media/mashup_new1.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/mashup_new1_thumb.jpg" alt="Video" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-              <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-            </div>
-          </div>
-        </article>
-
-        <!-- 20. New Video: VSL Flo Hook 2 -->
-        <article class="portfolio-card" data-category="vsl" data-video="media/vsl_flo_hook2.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/vsl_flo_hook2_thumb.jpg" alt="Video" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-              <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-            </div>
-          </div>
-        </article>
-
-        <!-- 21. New Video: Video May V2 -->
-        <article class="portfolio-card" data-category="ugc" data-video="media/video_may_v2.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/video_may_v2_thumb.jpg" alt="Video" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-              <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-            </div>
-          </div>
-        </article>
-
-        <!-- 22. New Video: VD Chargeur -->
-        <article class="portfolio-card" data-category="ugly" data-video="media/vd_chargeur.mp4">
-          <div class="portfolio-thumb">
-            <img src="media/vd_chargeur_thumb.jpg" alt="Video" class="card-thumb-img" loading="lazy" />
-            <div class="portfolio-overlay">
-              <button class="play-btn" aria-label="Regarder la vidéo"><i data-lucide="play"></i></button>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <div class="portfolio-cta reveal">
-        <p>Vous voulez des creatives comme celles-ci pour scaler votre marque ?</p>
-        <a href="#contact" class="btn btn-primary">Démarrer mon projet</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== RESULTS / METRICS ========== -->
-  <section class="section metrics-section">
-    <div class="container">
-      <div class="metrics-bg-text">RESULTS</div>
-      <div class="section-header reveal">
-        <span class="eyebrow">Nos résultats</span>
-        <h2 class="section-title">
-          Des chiffres qui <span class="gradient-text">parlent</span>
-        </h2>
-      </div>
-      <div class="metrics-grid">
-        <div class="metric-card reveal">
-          <div class="metric-icon"><i data-lucide="trending-up"></i></div>
-          <div class="metric-num counter" data-target="4">0</div>
-          <div class="metric-suffix">x ROAS</div>
-          <p>Retour sur investissement moyen généré pour nos clients e-commerce</p>
-        </div>
-        <div class="metric-card reveal">
-          <div class="metric-icon"><i data-lucide="zap"></i></div>
-          <div class="metric-num counter" data-target="48">0</div>
-          <div class="metric-suffix">heures</div>
-          <p>Délai de livraison garanti pour chaque pack de creatives commandé</p>
-        </div>
-        <div class="metric-card reveal">
-          <div class="metric-icon"><i data-lucide="users"></i></div>
-          <div class="metric-num counter" data-target="50">0</div>
-          <div class="metric-suffix">+ clients</div>
-          <p>Marques e-commerce servies avec succès depuis la création de GHARBI AGENCY</p>
-        </div>
-        <div class="metric-card reveal">
-          <div class="metric-icon"><i data-lucide="video"></i></div>
-          <div class="metric-num counter" data-target="200">0</div>
-          <div class="metric-suffix">+ vidéos</div>
-          <p>Creatives produites et diffusées sur Meta Ads avec des résultats mesurables</p>
+    <!-- ========== BRANDS ========== -->
+    <section class="brands" aria-label="Marques partenaires">
+      <p class="eyebrow">Ils nous ont fait confiance &amp; ont scalé avec nous</p>
+      <div class="marquee" data-velocity>
+        <div class="marquee-track">
+          <span>Diabex</span><i>✦</i><span>Asses</span><i>✦</i><span>Movari</span><i>✦</i><span>BioFeel</span><i>✦</i><span>Bioyra</span><i>✦</i><span>Herbavie</span><i>✦</i><span>Cynos</span><i>✦</i><span>Imabio</span><i>✦</i>
+          <span>Diabex</span><i>✦</i><span>Asses</span><i>✦</i><span>Movari</span><i>✦</i><span>BioFeel</span><i>✦</i><span>Bioyra</span><i>✦</i><span>Herbavie</span><i>✦</i><span>Cynos</span><i>✦</i><span>Imabio</span><i>✦</i>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========== TESTIMONIALS & AVIS CLIENTS ========== -->
-  <section id="testimonials" class="section testimonials-section">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="eyebrow">★ Preuves &amp; Avis Clients</span>
-        <h2 class="section-title">
-          Ils ont testé, voici leurs <span class="gradient-text">résultats</span>
-        </h2>
-        <p class="section-subtitle">
-          De vraies captures d'écran, des métriques publicitaires directes et des avis vocaux authentiques.
-        </p>
-      </div>
+    <!-- ========== ABOUT ========== -->
+    <section class="section about" id="about">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow"><span class="idx">01</span> L'agence</p>
+          <h2 class="title split">Un studio pensé pour <em>vendre</em>, pas juste pour faire joli.</h2>
+        </div>
 
-      <!-- Top Proof Showcase: WhatsApp Chat & Meta Ads Dashboard Captures -->
-      <div class="proof-showcase-grid reveal">
-        <!-- Capture 1: WhatsApp Feedback -->
-        <div class="proof-card">
-          <div class="proof-card-header">
-            <span class="proof-badge whatsapp-badge">
-              <i data-lucide="message-circle"></i> WhatsApp Client Vérifié
-            </span>
-            <span class="proof-zoom-hint" data-lightbox-img="media/review_whatsapp.png" data-lightbox-caption="Capture WhatsApp Client - Retour sur la qualité et satisfaction">
-              <i data-lucide="maximize-2"></i> Agrandir
-            </span>
-          </div>
-          <div class="proof-thumb-wrap" data-lightbox-img="media/review_whatsapp.png" data-lightbox-caption="Capture WhatsApp Client - Retour sur la qualité et satisfaction">
-            <img src="media/review_whatsapp.png" alt="Avis WhatsApp Client" class="proof-thumb-img" />
-            <div class="proof-overlay-hover">
-              <i data-lucide="zoom-in"></i> Cliquer pour zoomer
+        <div class="about-grid">
+          <div class="about-card tilt">
+            <div class="about-card-inner">
+              <img src="media/logo_banner_agency.png" alt="GHARBI AGENCY" class="about-banner" loading="lazy" />
+              <div class="about-badges">
+                <div><b>2+ ans</b><small>d'expérience</small></div>
+                <div><b>ROAS ×4</b><small>en moyenne</small></div>
+              </div>
             </div>
           </div>
-          <div class="proof-card-body">
-            <h3>Satisfaction Client Exceptionnelle</h3>
-            <div class="proof-quote-arabic" dir="rtl">
-              « والله يعطيك الصحة خدمة مزيانة برشااا<br/>
-              بلي توقعت باش تطلع مزيانة اما طلعت اكثر من توقعت ❤️<br/>
-              يعطيكم الصحة »
-            </div>
-            <p style="color: var(--text-2); font-size: 0.88rem;">
-              Retour réel envoyé par un client e-commerce suite à la livraison de ses creatives vidéo publicitaires.
+
+          <div class="about-copy">
+            <p class="lead reveal">
+              <strong>GHARBI AGENCY</strong> aide les marques e-commerce tunisiennes et internationales à générer de vrais résultats grâce à des creatives vidéo qui <em>convertissent</em>. Fondée par Gharbi Aziz, l'agence réunit montage cinématique, stratégie publicitaire et psychologie d'achat.
             </p>
-          </div>
-        </div>
-
-        <!-- Capture 2: Meta Ads Dashboard Metrics -->
-        <div class="proof-card">
-          <div class="proof-card-header">
-            <span class="proof-badge metrics-badge">
-              <i data-lucide="bar-chart-2"></i> Meta Ads Manager • Live Dashboard
-            </span>
-            <span class="proof-zoom-hint" data-lightbox-img="media/review_ads_metrics.png" data-lightbox-caption="Capture Dashboard Meta Ads - Métriques réelles de conversion et Hook Rate">
-              <i data-lucide="maximize-2"></i> Agrandir
-            </span>
-          </div>
-          <div class="proof-thumb-wrap" data-lightbox-img="media/review_ads_metrics.png" data-lightbox-caption="Capture Dashboard Meta Ads - Métriques réelles de conversion et Hook Rate">
-            <img src="media/review_ads_metrics.png" alt="Métriques Publicitaires Meta Ads" class="proof-thumb-img" />
-            <div class="proof-overlay-hover">
-              <i data-lucide="zoom-in"></i> Cliquer pour zoomer
+            <p class="lead-ar reveal" dir="rtl" lang="ar">بنينا GHARBI AGENCY باش نساعدو البيزنسات تكبّر مع creatives تستهدف العميل وتحوّله من viewer لـ buyer.</p>
+            <ul class="chips reveal">
+              <li>Video Editing</li><li>Meta Ads</li><li>Scriptwriting</li><li>Growth Strategy</li><li>UGC Content</li><li>VSL</li>
+            </ul>
+            <div class="about-actions reveal">
+              <a href="#contact" class="btn btn-solid magnetic"><span>Travailler avec nous</span></a>
+              <a href="https://wa.me/21697427727" target="_blank" rel="noreferrer" class="btn btn-ghost magnetic"><span>WhatsApp</span></a>
             </div>
-          </div>
-          <div class="proof-card-body">
-            <h3>Des Métriques qui Dépassent la Moyenne</h3>
-            <div class="proof-metrics-pills">
-              <div class="metric-pill">
-                <strong>51.71%</strong>
-                <span>Hook Rate (Stop Scroll 3s)</span>
-              </div>
-              <div class="metric-pill">
-                <strong>11.68%</strong>
-                <span>CTR Unique (Taux de Clic)</span>
-              </div>
-              <div class="metric-pill">
-                <strong>0.02 $</strong>
-                <span>Coût par Clic (CPC)</span>
-              </div>
-              <div class="metric-pill">
-                <strong>16.89%</strong>
-                <span>Hold Rate (Rétention)</span>
-              </div>
-            </div>
-            <p style="color: var(--text-2); font-size: 0.88rem;">
-              Données directes du gestionnaire de publicités : plus d'une personne sur deux s'arrête sur le hook et un coût par clic record.
-            </p>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- Middle: Voice Note Review Banner (Interactive Audio Player) -->
-      <div class="voice-review-banner reveal">
-        <div class="voice-review-grid">
-          <div class="voice-review-info">
-            <span class="voice-client-badge">
-              <i data-lucide="mic"></i> Avis Vocal Client Authentique (WhatsApp)
-            </span>
-            <div class="voice-client-quote" dir="rtl">
-              « السلام عليكم.. حبيت نبعثلك لافي متاعي بعد ما نستي الكل باش تزيد تكون أوضح الريزولتا.. خويا يعطيك الصحة يرحم والديك بصراحة خدمتك بوجولية ما شاء الله عليك.. ديما معاك ونكملو معاك إن شاء الله »
-            </div>
-            <p style="color: var(--text-2); font-size: 0.88rem;">
-              Écoutez la note vocale directe envoyée après analyse des retours de sa campagne publicitaire.
-            </p>
+    <!-- ========== SERVICES ========== -->
+    <section class="section services" id="services">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow"><span class="idx">02</span> Services</p>
+          <h2 class="title split">Tout ce qu'il faut pour transformer votre contenu en <em>machine à vendre.</em></h2>
+        </div>
+
+        <div class="services-grid">
+          <article class="service tilt spot">
+            <div class="service-top"><span class="service-num">01</span><span class="service-tag">Meta Ads · Reels</span></div>
+            <h3>Video Editing Premium</h3>
+            <p>Montage cinématique avec color grading, transitions fluides et hooks visuels qui stoppent le scroll en moins de 3 secondes.</p>
+            <ul><li>Livraison en 48h</li><li>Révisions illimitées</li><li>Format multi-plateforme</li></ul>
+          </article>
+          <article class="service service-hot tilt spot">
+            <div class="service-top"><span class="service-num">02</span><span class="service-tag hot">★ Populaire</span></div>
+            <h3>Creatives Ads Complètes</h3>
+            <p>De la stratégie au montage final : scripts, hooks A/B testés, CTA optimisés et creative briefs alignés sur votre audience.</p>
+            <ul><li>Script + Storyboard</li><li>3 hooks par vidéo</li><li>Analyse concurrentielle</li></ul>
+          </article>
+          <article class="service tilt spot">
+            <div class="service-top"><span class="service-num">03</span><span class="service-tag">Trust · UGC</span></div>
+            <h3>UGC &amp; Content Strategy</h3>
+            <p>Contenu authentique style UGC pour créer la confiance et augmenter votre taux de conversion sur Facebook et Meta Ads.</p>
+            <ul><li>Stratégie de contenu</li><li>Édition de style natif</li><li>Social proof intégré</li></ul>
+          </article>
+        </div>
+
+        <!-- Process -->
+        <div class="process">
+          <div class="process-head">
+            <p class="eyebrow">Process</p>
+            <h3 class="process-title" dir="rtl" lang="ar">من المنتج لـ <b>Creative</b></h3>
           </div>
+          <div class="process-line"><i id="process-line"></i></div>
+          <ol class="process-steps">
+            <li class="reveal">
+              <span class="step-n">01</span>
+              <h4 dir="rtl" lang="ar">نفهمو المنتج والعرض</h4>
+              <p>On analyse votre produit, votre audience, vos concurrents, et on définit ensemble le meilleur angle créatif pour votre marché.</p>
+            </li>
+            <li class="reveal">
+              <span class="step-n">02</span>
+              <h4 dir="rtl" lang="ar">Script إلي يضمن البيع</h4>
+              <p>Scripts et storyboards avec des hooks testés qui captent l'attention dans les 3 premières secondes — le moment critique.</p>
+            </li>
+            <li class="reveal">
+              <span class="step-n">03</span>
+              <h4 dir="rtl" lang="ar">نحضرو Creatives جاهزة</h4>
+              <p>Montage pro, sound design, captions animés, color grading premium. Livré en 48h, prêt à scaler vos campagnes.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
 
-          <div class="voice-player-widget" id="voice-player-widget">
-            <audio id="client-voice-audio" src="media/client_voice_review.ogg" preload="metadata"></audio>
-            <div class="voice-player-controls">
-              <button class="voice-play-btn" id="voice-play-btn" aria-label="Écouter l'avis vocal">
-                <i data-lucide="play" id="voice-play-icon"></i>
-                <i data-lucide="pause" id="voice-pause-icon" style="display: none;"></i>
+    <!-- ========== WORK ========== -->
+    <section class="section work" id="work">
+      <div class="wrap">
+        <div class="section-head work-head">
+          <div>
+            <p class="eyebrow"><span class="idx">03</span> Portfolio vidéo</p>
+            <h2 class="title split">Des creatives faites pour <em>arrêter le pouce.</em></h2>
+            <p class="work-ar" dir="rtl" lang="ar">خدمات مخدومة باش توقف أي scroll وتجيب أعلى نسبة مبيعات للـ Brand متاعك.</p>
+          </div>
+          <div class="filters" role="tablist" aria-label="Filtrer par format">
+            <button class="filter is-active" data-filter="all" role="tab" aria-selected="true">Tout <sup id="count-all"></sup></button>
+            <button class="filter" data-filter="ugc" role="tab" aria-selected="false">UGC</button>
+            <button class="filter" data-filter="mashups" role="tab" aria-selected="false">Mashups</button>
+            <button class="filter" data-filter="vsl" role="tab" aria-selected="false">VSL</button>
+            <button class="filter" data-filter="ugly" role="tab" aria-selected="false">Ugly Ads</button>
+          </div>
+        </div>
+
+        <div class="work-grid" id="work-grid"><!-- rendered from js/data.js --></div>
+
+        <div class="work-cta reveal">
+          <p>Vous voulez des creatives comme celles-ci pour scaler votre marque ?</p>
+          <a href="#contact" class="btn btn-solid magnetic"><span>Démarrer mon projet</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== NUMBERS ========== -->
+    <section class="section numbers" id="numbers">
+      <div class="wrap">
+        <p class="eyebrow"><span class="idx">04</span> Des chiffres qui parlent</p>
+        <div class="numbers-grid">
+          <div class="num reveal"><div class="num-big"><span data-count="4">0</span><em>×</em></div><h4>ROAS moyen</h4><p>Retour sur investissement moyen généré pour nos clients e-commerce.</p></div>
+          <div class="num reveal"><div class="num-big"><span data-count="48">0</span><em>h</em></div><h4>Délai de livraison</h4><p>Garanti pour chaque pack de creatives commandé.</p></div>
+          <div class="num reveal"><div class="num-big"><span data-count="50">0</span><em>+</em></div><h4>Marques servies</h4><p>Marques e-commerce accompagnées depuis la création de l'agence.</p></div>
+          <div class="num reveal"><div class="num-big"><span data-count="200">0</span><em>+</em></div><h4>Vidéos produites</h4><p>Creatives diffusées sur Meta Ads avec des résultats mesurables.</p></div>
+        </div>
+      </div>
+      <div class="big-marquee" aria-hidden="true">
+        <div class="marquee-track"><span>Stop the scroll</span><i>✦</i><span>Scale the brand</span><i>✦</i><span>Stop the scroll</span><i>✦</i><span>Scale the brand</span><i>✦</i></div>
+      </div>
+    </section>
+
+    <!-- ========== PROOF ========== -->
+    <section class="section proof" id="proof">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow"><span class="idx">05</span> Preuves &amp; avis clients</p>
+          <h2 class="title split">Ils ont testé. <em>Voici leurs résultats.</em></h2>
+        </div>
+
+        <div class="proof-grid">
+          <figure class="proof-card proof-wa tilt">
+            <div class="proof-label"><span class="live-dot"></span> WhatsApp · Client vérifié</div>
+            <button class="proof-img" data-lightbox="media/review_whatsapp.png" data-caption="Retour client WhatsApp">
+              <img src="media/review_whatsapp.png" alt="Avis client WhatsApp" loading="lazy" />
+              <span class="zoom">Agrandir ↗</span>
+            </button>
+            <blockquote dir="rtl" lang="ar">« والله يعطيك الصحة خدمة مزيانة برشااا — بلي توقعت باش تطلع مزيانة اما طلعت اكثر من توقعت ❤️ »</blockquote>
+            <figcaption>Retour réel d'un client e-commerce après la livraison de ses creatives.</figcaption>
+          </figure>
+
+          <figure class="proof-card proof-metrics tilt">
+            <div class="proof-label"><span class="live-dot"></span> Meta Ads Manager · Live</div>
+            <div class="metrics">
+              <div><b>51.71%</b><small>Hook rate (stop scroll 3s)</small><i style="--w:52%"></i></div>
+              <div><b>11.68%</b><small>CTR unique</small><i style="--w:58%"></i></div>
+              <div><b>0.02 $</b><small>Coût par clic</small><i style="--w:92%"></i></div>
+              <div><b>16.89%</b><small>Hold rate</small><i style="--w:34%"></i></div>
+            </div>
+            <button class="proof-strip" data-lightbox="media/review_ads_metrics.png" data-caption="Données directes du gestionnaire de publicités">
+              <img src="media/review_ads_metrics.png" alt="Métriques Meta Ads" loading="lazy" />
+              <span class="zoom">Voir la capture ↗</span>
+            </button>
+            <figcaption>Plus d'une personne sur deux s'arrête sur le hook — et un coût par clic record.</figcaption>
+          </figure>
+
+          <figure class="proof-card proof-voice tilt">
+            <div class="proof-label"><span class="live-dot"></span> Avis vocal · WhatsApp</div>
+            <div class="voice">
+              <button class="voice-btn" id="voice-btn" aria-label="Écouter la note vocale">
+                <svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="i-pause" viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
               </button>
-              <div class="voice-waveform-wrap">
-                <span class="voice-wave-bar" style="height: 25%;"></span>
-                <span class="voice-wave-bar" style="height: 55%;"></span>
-                <span class="voice-wave-bar" style="height: 85%;"></span>
-                <span class="voice-wave-bar" style="height: 40%;"></span>
-                <span class="voice-wave-bar" style="height: 70%;"></span>
-                <span class="voice-wave-bar" style="height: 95%;"></span>
-                <span class="voice-wave-bar" style="height: 60%;"></span>
-                <span class="voice-wave-bar" style="height: 80%;"></span>
-                <span class="voice-wave-bar" style="height: 35%;"></span>
-                <span class="voice-wave-bar" style="height: 65%;"></span>
-                <span class="voice-wave-bar" style="height: 90%;"></span>
-                <span class="voice-wave-bar" style="height: 50%;"></span>
-                <span class="voice-wave-bar" style="height: 75%;"></span>
-                <span class="voice-wave-bar" style="height: 30%;"></span>
-                <span class="voice-wave-bar" style="height: 60%;"></span>
-                <span class="voice-wave-bar" style="height: 85%;"></span>
-              </div>
+              <div class="voice-wave" id="voice-wave" aria-hidden="true"></div>
+              <span class="voice-time"><span id="voice-cur">0:00</span> / <span id="voice-dur">0:42</span></span>
+              <audio id="voice-audio" src="media/client_voice_review.ogg" preload="metadata"></audio>
             </div>
-            <input type="range" class="voice-seek-bar" id="voice-seek-bar" min="0" max="100" value="0" step="0.1" />
-            <div class="voice-time-row">
-              <span id="voice-current-time">0:00</span>
-              <span>Note vocale WhatsApp</span>
-              <span id="voice-duration">0:42</span>
-            </div>
-          </div>
+            <blockquote dir="rtl" lang="ar">« خويا يعطيك الصحة يرحم والديك بصراحة خدمتك بوجولية ما شاء الله عليك.. ديما معاك ونكملو معاك إن شاء الله »</blockquote>
+            <figcaption>Note vocale envoyée après analyse des résultats de sa campagne.</figcaption>
+          </figure>
+        </div>
+
+        <div class="quotes">
+          <figure class="quote reveal">
+            <div class="stars">★★★★★</div>
+            <blockquote>« Les creatives de GHARBI AGENCY ont fait bondir notre CTR et divisé par deux notre coût d'acquisition. Le sens du hook et de la psychologie d'achat font toute la différence. »</blockquote>
+            <figcaption><span class="av">DX</span><b>Diabex</b><small>Partenaire e-commerce · Collaboration régulière</small></figcaption>
+          </figure>
+          <figure class="quote reveal">
+            <div class="stars">★★★★★</div>
+            <blockquote>« Les formats Mashups et UGC nous ont permis de scaler nos campagnes Meta Ads en un temps record. Qualité de montage et délais de 48h impeccables. »</blockquote>
+            <figcaption><span class="av">MV</span><b>Movari Shop</b><small>Fashion &amp; Lifestyle · ROAS ×4.2</small></figcaption>
+          </figure>
+          <figure class="quote reveal">
+            <div class="stars">★★★★★</div>
+            <blockquote>« On cherchait des creatives qui stoppent le scroll dès les 3 premières secondes : contrat plus que rempli. GHARBI AGENCY est devenue notre partenaire stratégique. »</blockquote>
+            <figcaption><span class="av">AS</span><b>Asses</b><small>Accessoires &amp; Tech · Ugly Ads &amp; VSL</small></figcaption>
+          </figure>
         </div>
       </div>
+    </section>
 
-      <!-- Bottom: Partner Brands Written Reviews -->
-      <div class="testimonials-wrapper reveal">
-        <div class="testimonial-card">
-          <div class="testi-header">
-            <div class="testi-avatar">DX</div>
-            <div class="testi-info">
-              <strong>Diabex Brand</strong>
-              <span>Partenaire E-commerce</span>
-            </div>
-            <div class="testi-stars">★★★★★</div>
-          </div>
-          <div class="testi-proof-type">
-            <i data-lucide="award"></i> Collaboration Régulière
-          </div>
-          <p class="testi-text">
-            "Les creatives de GHARBI AGENCY ont fait bondir notre CTR et divisé par deux notre coût d'acquisition. Le sens du hook et de la psychologie d'achat font toute la différence."
-          </p>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="testi-header">
-            <div class="testi-avatar">MV</div>
-            <div class="testi-info">
-              <strong>Movari Shop</strong>
-              <span>Fashion &amp; Lifestyle</span>
-            </div>
-            <div class="testi-stars">★★★★★</div>
-          </div>
-          <div class="testi-proof-type">
-            <i data-lucide="trending-up"></i> ROAS x4.2
-          </div>
-          <p class="testi-text">
-            "Les formats Mashups et UGC nous ont permis de scaler nos campagnes Meta Ads en un temps record. La qualité de montage et le respect des délais en 48h sont impeccables."
-          </p>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="testi-header">
-            <div class="testi-avatar">AS</div>
-            <div class="testi-info">
-              <strong>Asses Brand</strong>
-              <span>Accessoires &amp; Tech</span>
-            </div>
-            <div class="testi-stars">★★★★★</div>
-          </div>
-          <div class="testi-proof-type">
-            <i data-lucide="zap"></i> Ugly Ads &amp; VSL
-          </div>
-          <p class="testi-text">
-            "On cherchait des creatives qui stoppent le scroll dès les 3 premières secondes : contrat plus que rempli ! Gharbi Agency est devenu notre partenaire stratégique pour nos ads."
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== CONTACT ========== -->
-  <section id="contact" class="section contact-section">
-    <div class="container">
-      <div class="contact-wrapper">
-        <div class="contact-info reveal">
-          <span class="eyebrow">Me contacter</span>
-          <h2 class="section-title">
-            Prêt à <span class="gradient-text">scaler</span><br/>votre marque ?
-          </h2>
-          <p>
-            Remplissez le formulaire et je vous contacte dans les <strong>24 heures</strong> pour discuter de votre projet.
-          </p>
-          <div class="contact-details">
-            <a href="https://wa.me/21697427727" target="_blank" rel="noreferrer" class="contact-item">
-              <div class="contact-item-icon whatsapp-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                </svg>
-              </div>
-              <div>
-                <strong>WhatsApp</strong>
-                <span>+216 97 427 727</span>
-              </div>
+    <!-- ========== CONTACT ========== -->
+    <section class="section contact" id="contact">
+      <div class="wrap contact-grid">
+        <div class="contact-copy">
+          <p class="eyebrow"><span class="idx">06</span> Contact</p>
+          <h2 class="title contact-title split">Prêt à <em>scaler</em> votre marque&nbsp;?</h2>
+          <p class="lead">Remplissez le formulaire — on vous répond sur WhatsApp en moins de <strong>24 heures</strong>.</p>
+          <div class="contact-links">
+            <a href="https://wa.me/21697427727" target="_blank" rel="noreferrer" class="contact-link magnetic">
+              <small>WhatsApp</small><b>+216 97 427 727</b><i>↗</i>
             </a>
-            <a href="https://www.instagram.com/gharbi_editor/?hl=en" target="_blank" rel="noreferrer" class="contact-item">
-              <div class="contact-item-icon insta-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-                </svg>
-              </div>
-              <div>
-                <strong>Instagram</strong>
-                <span>@gharbi_editor</span>
-              </div>
+            <a href="https://www.instagram.com/gharbi_editor/?hl=en" target="_blank" rel="noreferrer" class="contact-link magnetic">
+              <small>Instagram</small><b>Gharbi Agency</b><i>↗</i>
             </a>
           </div>
+          <p class="open-badge"><span class="live-dot"></span> <span dir="rtl" lang="ar">نقبل clients جدد</span></p>
         </div>
 
-        <form class="contact-form reveal" id="contact-form" dir="rtl">
-          <div class="form-pill">
-            <span class="pill-dot"></span>
-            نقبل clients جدد
+        <form class="form" id="contact-form" dir="rtl" novalidate>
+          <div class="field">
+            <label for="f-name">اسمك أو اسم البراند</label>
+            <input id="f-name" type="text" name="name" placeholder="اكتب الاسم هنا" required autocomplete="name" />
           </div>
-          <div class="form-grid">
-            <label class="form-field">
-              <span>اسمك أو اسم البراند</span>
-              <input type="text" name="name" placeholder="اكتب الاسم هنا" required />
-            </label>
-            <label class="form-field">
-              <span>نومرو الـ WhatsApp</span>
-              <input type="tel" name="whatsapp" placeholder="+216 00 000 000" required />
-            </label>
+          <div class="field">
+            <label for="f-wa">نومرو الـ WhatsApp</label>
+            <input id="f-wa" type="tel" name="whatsapp" placeholder="+216 00 000 000" required dir="ltr" autocomplete="tel" />
           </div>
-          <fieldset class="form-field">
+          <fieldset class="field">
             <legend>نوع البيزنس</legend>
-            <div class="radio-grid">
-              <label class="radio-card">
-                <input type="radio" name="type" value="ecommerce" />
-                <span>
-                  <strong>E-commerce</strong>
-                  <small>متجر إلكتروني</small>
-                </span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="type" value="service" />
-                <span>
-                  <strong>Service</strong>
-                  <small>خدمات</small>
-                </span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="type" value="brand" />
-                <span>
-                  <strong>Brand</strong>
-                  <small>براند</small>
-                </span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="type" value="other" />
-                <span>
-                  <strong>Autre</strong>
-                  <small>آخر</small>
-                </span>
-              </label>
+            <div class="seg">
+              <label><input type="radio" name="type" value="E-commerce" checked /><span>E-commerce<small>متجر إلكتروني</small></span></label>
+              <label><input type="radio" name="type" value="Service" /><span>Service<small>خدمات</small></span></label>
+              <label><input type="radio" name="type" value="Brand" /><span>Brand<small>براند</small></span></label>
+              <label><input type="radio" name="type" value="Autre" /><span>Autre<small>آخر</small></span></label>
             </div>
           </fieldset>
-          <label class="form-field">
-            <span>Type de projet</span>
-            <select name="pack">
+          <div class="field">
+            <label for="f-pack">Type de projet</label>
+            <select id="f-pack" name="pack" dir="ltr" required>
               <option value="" disabled selected>Choisir un service</option>
-              <option value="Meta Ads Video">Meta Ads Video Creative</option>
-              <option value="UGC Ads">UGC Creative Ads</option>
-              <option value="Mashups">Mashups Dynamiques</option>
-              <option value="VSL">VSL (Video Sales Letter)</option>
-              <option value="Sur mesure">Projet sur mesure</option>
+              <option>Meta Ads Video Creative</option>
+              <option>UGC Creative Ads</option>
+              <option>Mashups Dynamiques</option>
+              <option>VSL (Video Sales Letter)</option>
+              <option>Projet sur mesure</option>
             </select>
-          </label>
-          <label class="form-field">
-            <span>Message (optionnel)</span>
-            <textarea name="message" rows="3" placeholder="دير ملاحظاتك هنا..."></textarea>
-          </label>
-          <button type="submit" class="btn btn-primary w-full" id="submit-btn">
-            <i data-lucide="send"></i>
-            ابعث طلبك
-          </button>
-          <p class="form-privacy">🔒 معلوماتك تبقى سرّية</p>
+          </div>
+          <div class="field">
+            <label for="f-msg">Message (optionnel)</label>
+            <textarea id="f-msg" name="message" rows="3" placeholder="دير ملاحظاتك هنا..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-solid btn-block magnetic" id="submit-btn"><span>ابعث طلبك على WhatsApp</span></button>
+          <p class="form-note" id="form-note">🔒 معلوماتك تبقى سرّية</p>
         </form>
       </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <img src="media/logo_icon.png" alt="Gharbi Agency" class="footer-logo-img" />
-            <span class="logo-text">Gharbi Agency</span>
-          </div>
-          <p>Fondateur de GHARBI AGENCY — Des creatives Meta Ads qui transforment vos produits en résultats mesurables.</p>
-          <div class="footer-social">
-            <a href="https://www.instagram.com/gharbi_editor/?hl=en" target="_blank" rel="noreferrer" aria-label="Instagram" class="social-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-              </svg>
-            </a>
-            <a href="https://wa.me/21697427727" target="_blank" rel="noreferrer" aria-label="WhatsApp" class="social-link">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-              </svg>
-            </a>
-          </div>
-        </div>
-        <div class="footer-links">
-          <h4>Navigation</h4>
-          <a href="#about">À propos</a>
-          <a href="#services">Services</a>
-          <a href="#portfolio">Portfolio</a>
-          <a href="#contact">Contact</a>
-        </div>
-        <div class="footer-links">
-          <h4>Contact</h4>
-          <a href="https://wa.me/21697427727">+216 97 427 727</a>
-          <a href="https://www.instagram.com/gharbi_editor/?hl=en">@gharbi_editor</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2026 Gharbi Aziz — GHARBI AGENCY. Tous droits réservés.</span>
-        <span>Tunisia 🇹🇳</span>
-      </div>
+    <div class="wrap footer-top">
+      <p>Des creatives Meta Ads qui transforment vos produits en résultats mesurables.</p>
+      <nav aria-label="Pied de page">
+        <a href="#about">Agence</a><a href="#services">Services</a><a href="#work">Portfolio</a><a href="#contact">Contact</a>
+        <a href="https://wa.me/21697427727" target="_blank" rel="noreferrer">WhatsApp ↗</a>
+        <a href="https://www.instagram.com/gharbi_editor/?hl=en" target="_blank" rel="noreferrer">Instagram ↗</a>
+      </nav>
+    </div>
+    <div class="footer-word" aria-hidden="true">GHARBI<em>agency</em></div>
+    <div class="wrap footer-bottom">
+      <span>© 2026 GHARBI AGENCY — Gharbi Aziz</span>
+      <span>Tunisia 🇹🇳</span>
+      <a href="#top">Retour en haut ↑</a>
     </div>
   </footer>
 
-  
-  <!-- Image Lightbox Modal -->
-  <div id="image-modal" class="image-modal" aria-hidden="true">
-    <div class="image-modal-backdrop"></div>
-    <div class="image-modal-container">
-      <button class="image-modal-close" id="image-modal-close" aria-label="Fermer l'image">
-        <i data-lucide="x"></i>
-      </button>
-      <img id="image-modal-img" src="" alt="Capture plein écran" />
-      <p id="image-modal-caption" class="image-modal-caption"></p>
-    </div>
-  </div>
-
-  <!-- Video Player Modal -->
-  <div id="video-modal" class="video-modal" aria-hidden="true">
-    <div class="video-modal-backdrop"></div>
-    <div class="video-modal-container">
-      <button class="video-modal-close" id="video-modal-close" aria-label="Fermer la vidéo">
-        <i data-lucide="x"></i>
-      </button>
-      
-      <div class="video-modal-player-wrapper">
-        <video id="video-modal-player" controls playsinline webkit-playsinline="true" x5-playsinline="true" preload="metadata" controlsList="nodownload"></video>
-        <div class="video-modal-play-indicator" id="video-play-indicator" aria-hidden="true">
-          <svg class="indicator-play" viewBox="0 0 24 24" fill="currentColor" width="32" height="32" style="display:none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-          <svg class="indicator-pause" viewBox="0 0 24 24" fill="currentColor" width="32" height="32" style="display:none;"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
-        </div>
+  <!-- ========== VIDEO MODAL ========== -->
+  <div class="modal" id="video-modal" aria-hidden="true" role="dialog" aria-label="Lecteur vidéo">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-box">
+      <div class="modal-head">
+        <span class="modal-tag" id="modal-tag">UGC</span>
+        <span class="modal-title" id="modal-title"></span>
+        <button class="modal-close" data-close aria-label="Fermer">✕</button>
+      </div>
+      <div class="modal-player">
+        <video id="modal-video" playsinline controls preload="metadata" controlslist="nodownload"></video>
+      </div>
+      <div class="modal-nav">
+        <button id="modal-prev" aria-label="Vidéo précédente">← Préc.</button>
+        <span id="modal-index">1 / 22</span>
+        <button id="modal-next" aria-label="Vidéo suivante">Suiv. →</button>
       </div>
     </div>
   </div>
 
-  <!-- WhatsApp Float -->
-  <a href="https://wa.me/21697427727?text=Bonjour%20Gharbi%20Aziz%2C%20je%20voudrais%20en%20savoir%20plus%20sur%20vos%20services." 
-     target="_blank" rel="noreferrer" 
-     class="whatsapp-float" 
-     aria-label="Contacter sur WhatsApp">
-    <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-    </svg>
-    <span class="float-pulse"></span>
+  <!-- ========== IMAGE LIGHTBOX ========== -->
+  <div class="modal lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Image">
+    <div class="modal-backdrop" data-close></div>
+    <figure class="lightbox-box">
+      <img id="lightbox-img" alt="" />
+      <figcaption id="lightbox-cap"></figcaption>
+      <button class="modal-close" data-close aria-label="Fermer">✕</button>
+    </figure>
+  </div>
+
+  <a class="wa-float magnetic" href="https://wa.me/21697427727?text=Bonjour%20GHARBI%20AGENCY%2C%20je%20voudrais%20en%20savoir%20plus%20sur%20vos%20services." target="_blank" rel="noreferrer" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.4 5 5.1-1.3A9.9 9.9 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3a8.2 8.2 0 1 1 6.9 3.8Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2l-.5-.3Z"/></svg>
   </a>
 
-  <script src="script.js?v=20261031-01"></script>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/lenis.min.js" defer></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
