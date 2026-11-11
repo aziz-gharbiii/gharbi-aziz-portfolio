@@ -1,7 +1,7 @@
 // ============================================================
 // GHARBI AGENCY — page logic
 // ============================================================
-import { WORKS } from './data.js?v=2026.11m';
+import { WORKS } from './data.js?v=2026.11n';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -62,7 +62,7 @@ function startPage() {
 
 async function initScene() {
   try {
-    const { createScene } = await import('./scene.js?v=2026.11m');
+    const { createScene } = await import('./scene.js?v=2026.11n');
     scene = createScene({
       canvas: $('#webgl'),
       reducedMotion: false,
@@ -761,3 +761,24 @@ if (!finePointer) {
   const hint = $('.stage-hint');
   if (hint) hint.textContent = 'Touchez une vidéo dans l\u2019anneau pour la regarder.';
 }
+
+// ------------------------------------------------------------
+// Hero Arabic title: shrink to fit if a line is wider than the screen
+// (Alexandria is wide; exact width depends on the device + font loading)
+// ------------------------------------------------------------
+(() => {
+  const h1 = $('.hero-ar');
+  if (!h1) return;
+  const fit = () => {
+    h1.style.fontSize = '';
+    const box = h1.getBoundingClientRect().width;
+    const widest = Math.max(...$$('.hero-ar .line > span').map((s) => s.scrollWidth));
+    if (widest > box * 0.98) {
+      const fs = parseFloat(getComputedStyle(h1).fontSize);
+      h1.style.fontSize = `${Math.floor(fs * (box * 0.96) / widest)}px`;
+    }
+  };
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  addEventListener('resize', fit);
+})();
