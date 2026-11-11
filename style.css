@@ -459,7 +459,7 @@ main, .footer { position: relative; z-index: 2; }
    CONTACT
    ============================================================ */
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 96px); align-items: start; }
-.contact-title { font-size: clamp(48px, 7vw, 112px); }
+.contact-title { font-size: clamp(44px, 5.2vw, 88px); max-width: none; line-height: 1.02; }
 .contact-copy .lead { margin-top: 24px; }
 .contact-links { display: grid; gap: 10px; margin-top: 40px; }
 .contact-link {
