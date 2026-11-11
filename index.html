@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300..700&family=JetBrains+Mono:wght@400;500&family=Alexandria:wght@400;600;800;900&display=swap" rel="stylesheet" />
 
   <link rel="preload" href="media/gh-logo.svg" as="fetch" crossorigin />
-  <link rel="stylesheet" href="style.css?v=2026.11g" />
+  <link rel="stylesheet" href="style.css?v=2026.11h" />
 
   <script type="importmap">
   {
@@ -394,6 +394,7 @@
           </div>
 
           <form class="form booking" id="booking-form" novalidate>
+            <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
             <div class="booking-head">
               <span class="live-dot"></span>
               <div>
@@ -436,8 +437,8 @@
               </div>
             </fieldset>
 
-            <button type="submit" class="btn btn-solid btn-block magnetic"><span id="booking-cta">Demander ce créneau sur WhatsApp</span></button>
-            <p class="form-note" id="booking-note">On confirme l'heure exacte et l'adresse sur WhatsApp.</p>
+            <button type="submit" class="btn btn-solid btn-block magnetic"><span id="booking-cta">Réserver ce créneau</span></button>
+            <p class="form-note" id="booking-note">Réponse rapide — on confirme l'heure exacte et l'adresse sur WhatsApp.</p>
           </form>
         </div>
       </div>
@@ -462,6 +463,7 @@
         </div>
 
         <form class="form" id="contact-form" dir="rtl" novalidate>
+          <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <div class="field">
             <label for="f-name">اسمك أو اسم البراند</label>
             <input id="f-name" type="text" name="name" placeholder="اكتب الاسم هنا" required autocomplete="name" />
@@ -494,7 +496,7 @@
             <label for="f-msg">Message (optionnel)</label>
             <textarea id="f-msg" name="message" rows="3" placeholder="دير ملاحظاتك هنا..."></textarea>
           </div>
-          <button type="submit" class="btn btn-solid btn-block magnetic" id="submit-btn"><span>ابعث طلبك على WhatsApp</span></button>
+          <button type="submit" class="btn btn-solid btn-block magnetic" id="submit-btn"><span>ابعث طلبك</span></button>
           <p class="form-note" id="form-note">🔒 معلوماتك تبقى سرّية</p>
         </form>
       </div>
@@ -556,6 +558,6 @@
   <script src="vendor/gsap.min.js" defer></script>
   <script src="vendor/ScrollTrigger.min.js" defer></script>
   <script src="vendor/lenis.min.js" defer></script>
-  <script type="module" src="js/main.js?v=2026.11g"></script>
+  <script type="module" src="js/main.js?v=2026.11h"></script>
 </body>
 </html>

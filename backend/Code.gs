@@ -1,3 +1,4 @@
+/** @OnlyCurrentDoc */
 /**
  * GHARBI AGENCY — réception des formulaires du site (rendez-vous studio + contact)
  * Google Apps Script lié au Sheet "GHARBI AGENCY — Demandes site".

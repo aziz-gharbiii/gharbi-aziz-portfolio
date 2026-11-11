@@ -1,7 +1,7 @@
 // ============================================================
 // GHARBI AGENCY — page logic
 // ============================================================
-import { WORKS } from './data.js?v=2026.11g';
+import { WORKS } from './data.js?v=2026.11h';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -62,7 +62,7 @@ function startPage() {
 
 async function initScene() {
   try {
-    const { createScene } = await import('./scene.js?v=2026.11g');
+    const { createScene } = await import('./scene.js?v=2026.11h');
     scene = createScene({
       canvas: $('#webgl'),
       reducedMotion: false,
@@ -546,8 +546,31 @@ addEventListener('keydown', (e) => {
   });
 })();
 
+
 // ------------------------------------------------------------
-// Contact form → WhatsApp
+// Lead capture → Google Sheet (Apps Script web app) + email notification
+// ------------------------------------------------------------
+const FORMS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzzztKbwvY1cM211dNsUVTWGjeDLbygDwiSRgUk8-mERjkTzOsQvJJqWPlPnnKufg8KEg/exec';
+function sendLead(data) {
+  // text/plain + no-cors = "simple" request, accepted by Apps Script without a CORS preflight
+  return fetch(FORMS_ENDPOINT, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ ...data, source: location.href.split('#')[0] }),
+  }).then(() => true).catch(() => false);
+}
+function setBusy(btn, busy, label) {
+  btn.disabled = busy;
+  btn.style.opacity = busy ? '0.6' : '';
+  if (label) btn.querySelector('span').textContent = label;
+}
+function waLink(text) {
+  return `https://wa.me/21697427727?text=${encodeURIComponent(text)}`;
+}
+
+// ------------------------------------------------------------
+// Contact form → Sheet + email (WhatsApp en option)
 // ------------------------------------------------------------
 $('#contact-form').addEventListener('submit', (e) => {
   e.preventDefault();
@@ -565,6 +588,7 @@ $('#contact-form').addEventListener('submit', (e) => {
   });
   const note = $('#form-note');
   if (!ok) { note.textContent = '⚠️ عمّر الخانات الضرورية من فضلك'; note.classList.remove('ok'); return; }
+  if (f.website && f.website.value) return; // honeypot
   const text = [
     'Bonjour GHARBI AGENCY 👋',
     `Nom / Brand : ${name}`,
@@ -573,10 +597,21 @@ $('#contact-form').addEventListener('submit', (e) => {
     `Projet : ${pack}`,
     msg ? `Message : ${msg}` : '',
   ].filter(Boolean).join('\n');
-  window.open(`https://wa.me/21697427727?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
-  note.textContent = '✅ تحلّ WhatsApp — ابعث الميساج وناخذو معاك الاتصال';
-  note.classList.add('ok');
-  f.reset();
+  const btn = f.querySelector('button[type="submit"]');
+  const label = btn.querySelector('span').textContent;
+  setBusy(btn, true, '... جاري الإرسال');
+  sendLead({ type: 'contact', name, whatsapp: wa, business: type, topic: pack, message: msg }).then((sent) => {
+    setBusy(btn, false, label);
+    if (sent) {
+      note.innerHTML = `✅ وصلنا الطلب متاعك — باش نكلموك على WhatsApp في أقرب وقت. <a href="${waLink(text)}" target="_blank" rel="noopener">ولا ابعثلنا توّا ↗</a>`;
+      note.classList.add('ok');
+      f.reset();
+    } else {
+      window.open(waLink(text), '_blank', 'noopener');
+      note.textContent = '✅ تحلّ WhatsApp — ابعث الميساج وناخذو معاك الاتصال';
+      note.classList.add('ok');
+    }
+  });
 });
 
 // ------------------------------------------------------------
@@ -616,7 +651,7 @@ $('#contact-form').addEventListener('submit', (e) => {
   const sync = () => {
     const day = form.querySelector('[name="day"]:checked').value;
     const slot = form.querySelector('[name="slot"]:checked').value.toLowerCase();
-    cta.textContent = `Demander ${day} · ${slot}`;
+    cta.textContent = `Réserver ${day} · ${slot}`;
   };
   form.addEventListener('change', sync);
   sync();
@@ -632,18 +667,35 @@ $('#contact-form').addEventListener('submit', (e) => {
     });
     const note = $('#booking-note');
     if (!ok) { note.textContent = '⚠️ Ajoutez votre nom et votre WhatsApp.'; note.classList.remove('ok'); return; }
+    if (form.website && form.website.value) return; // honeypot
+    const day = form.querySelector('[name="day"]:checked').value;
+    const slot = form.querySelector('[name="slot"]:checked').value;
+    const topic = form.querySelector('[name="topic"]:checked').value;
     const text = [
       'Bonjour GHARBI AGENCY 👋',
       'Je souhaite un rendez-vous au studio (La Manouba).',
-      `📅 Jour : ${form.querySelector('[name="day"]:checked').value}`,
-      `🕒 Moment : ${form.querySelector('[name="slot"]:checked').value}`,
-      `🎯 Objet : ${form.querySelector('[name="topic"]:checked').value}`,
+      `📅 Jour : ${day}`,
+      `🕒 Moment : ${slot}`,
+      `🎯 Objet : ${topic}`,
       `👤 Nom / Brand : ${name}`,
       `📱 WhatsApp : ${wa}`,
     ].join('\n');
-    window.open(`https://wa.me/21697427727?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
-    note.textContent = '✅ WhatsApp ouvert — envoyez le message, on confirme l\'heure et l\'adresse.';
-    note.classList.add('ok');
+    const btn = form.querySelector('button[type="submit"]');
+    setBusy(btn, true, 'Envoi de la demande…');
+    sendLead({ type: 'rdv', name, whatsapp: wa, day, slot, topic }).then((sent) => {
+      setBusy(btn, false);
+      sync();
+      if (sent) {
+        note.innerHTML = `✅ Demande reçue pour <b>${day}</b> (${slot.toLowerCase()}). On vous confirme l'heure et l'adresse sur WhatsApp. <a href="${waLink(text)}" target="_blank" rel="noopener">Écrire aussi sur WhatsApp ↗</a>`;
+        note.classList.add('ok');
+        form.name.value = '';
+        form.whatsapp.value = '';
+      } else {
+        window.open(waLink(text), '_blank', 'noopener');
+        note.textContent = '✅ WhatsApp ouvert — envoyez le message, on confirme l\'heure et l\'adresse.';
+        note.classList.add('ok');
+      }
+    });
   });
 })();
 

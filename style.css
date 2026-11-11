@@ -700,3 +700,9 @@ main, .footer { position: relative; z-index: 2; }
   .seg-3 { grid-template-columns: repeat(3, 1fr); }
   .map-info { flex-direction: column; align-items: flex-start; }
 }
+
+/* honeypot (hidden from humans) */
+.hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.form-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.form-note b { color: var(--ink); }
+.btn:disabled { cursor: progress; }
