@@ -1,7 +1,7 @@
 // ============================================================
 // GHARBI AGENCY — page logic
 // ============================================================
-import { WORKS } from './data.js';
+import { WORKS } from './data.js?v=2026.11c';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -60,7 +60,7 @@ function startPage() {
 
 async function initScene() {
   try {
-    const { createScene } = await import('./scene.js');
+    const { createScene } = await import('./scene.js?v=2026.11c');
     scene = createScene({
       canvas: $('#webgl'),
       reducedMotion: reduced,
