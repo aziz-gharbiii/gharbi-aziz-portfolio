@@ -223,8 +223,8 @@ main, .footer { position: relative; z-index: 2; }
   font: 500 11px var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);
   background: rgba(10, 10, 12, 0.4); backdrop-filter: blur(10px);
 }
-.hero-ar { position: relative; font-weight: 900; font-size: clamp(56px, 10.5vw, 168px); line-height: 1.02; letter-spacing: 0; }
-.hero-ar .line { position: absolute; display: block; overflow: hidden; padding: 0.06em 0.04em 0.12em; }
+.hero-ar { position: relative; font-weight: 800; font-size: clamp(48px, min(8.2vw, 15vh), 140px); line-height: 1.1; letter-spacing: 0; }
+.hero-ar .line { position: absolute; display: block; overflow: hidden; white-space: nowrap; padding: 0.06em 0.04em 0.16em; max-width: 100%; }
 .hero-ar .line > span { display: inline-block; }
 .hero-ar .line:first-child { top: 2%; right: 0; }
 .hero-ar .line:last-child { bottom: 2%; left: 0; }
@@ -588,7 +588,7 @@ main, .footer { position: relative; z-index: 2; }
 @media (max-width: 720px) {
   .hero { height: 360vh; }
   .hero-stage { padding: 88px 16px 64px; }
-  .hero-ar { font-size: clamp(46px, 15vw, 88px); }
+  .hero-ar { font-size: clamp(36px, 11.5vw, 72px); }
   .hero-ar .line:first-child { top: 0; }
   .hero-ar .line:last-child { bottom: 0; }
   .hero-bottom { flex-direction: column; align-items: stretch; gap: 18px; }
