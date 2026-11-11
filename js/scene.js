@@ -10,7 +10,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { WORKS } from './data.js?v=2026.11k';
+import { WORKS } from './data.js?v=2026.11m';
 
 const BG = 0x050506;
 const ACCENT = new THREE.Color('#d4ff3a');
@@ -168,7 +168,7 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
       gl_Position = projectionMatrix * mv;
     }`;
   const cardFrag = /* glsl */ `
-    uniform sampler2D map; uniform float uHover; uniform float uDim; uniform float uOpacity; uniform float uTime; uniform vec3 uAccent;
+    uniform sampler2D map; uniform float uHover; uniform float uDim; uniform float uFar; uniform float uOpacity; uniform float uTime; uniform vec3 uAccent;
     varying vec2 vUv; varying float vDepth;
     void main(){
       vec2 uv = vUv;
@@ -182,7 +182,7 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
       // accent edge on hover
       float edge = 1.0 - smoothstep(0.0, 0.025, min(min(uv.x, 1.0 - uv.x), min(uv.y, 1.0 - uv.y) * 0.56));
       col = mix(col, uAccent, edge * uHover);
-      float fade = smoothstep(19.0, 7.0, vDepth) * smoothstep(0.4, 1.6, vDepth);
+      float fade = smoothstep(uFar, uFar - 11.0, vDepth) * smoothstep(0.4, 1.6, vDepth);
       gl_FragColor = vec4(col, uOpacity * fade);
       #include <tonemapping_fragment>
       #include <colorspace_fragment>
@@ -202,6 +202,7 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
         uOpacity: { value: 1 },
         uTime: { value: 0 },
         uBend: { value: 0.05 },
+        uFar: { value: 19 },
         uAccent: { value: ACCENT },
       },
       vertexShader: cardVert,
@@ -286,11 +287,11 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
     spin: 0,
     velocity: 0,
   };
-  const cur = { camZ: 10, camY: 0, logoZ: 0, logoS: 1, logoY: 0, logoX: 0, spin: 0, radius: 4.3, tilt: 0.42, ringY: -1.1, glow: 0.3, dim: 0.42, look: 0 };
+  const cur = { camZ: 10, camY: 0, logoZ: 0, logoS: 1, logoY: 0, logoX: 0, spin: 0, radius: 4.3, tilt: 0.42, ringY: -1.1, glow: 0.3, dim: 0.6, look: 0 };
 
   function portraitFactor() {
     const a = innerWidth / innerHeight;
-    return a < 1 ? Math.min(1.9, 1 / a * 0.95) : 1;
+    return a < 1 ? Math.min(1.42, 0.55 + 0.45 / a) : 1;
   }
 
   function targets() {
@@ -308,15 +309,16 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
       camZ: lerp(lerp(lerp(10, 9.2, A), 4.2, B), 0.8, C) * lerp(pf, 1, B),
       camY: lerp(lerp(lerp(0, 0.4, A), 2.9, B), 0.15, C),
       logoZ: lerp(0, -1.2, B) - C * 2.8,
-      logoS: lerp(lerp(1, 0.95, A), 0.7, B) * lerp(1, 0.62, C),
+      logoS: (wide ? 1 : 0.82) * lerp(lerp(1, 0.95, A), 0.7, B) * lerp(1, 0.62, C),
       logoY: lerp(0, 0.3 + lift, M) + lerp(0, 0.4, C) * (wide ? 0 : 1),
       logoX: lerp(lerp(0, side, M), side * 0.45, C),
       spin: Math.PI * 2 * (ease(seg(p, 0.18, 0.34)) + ease(seg(p, 0.6, 0.76))),
-      radius: lerp(lerp(4.3, 4.6, A), 5.4, B),
-      tilt: lerp(lerp(0.42, 0.3, A), 0, B),
-      ringY: lerp(lerp(-1.1, -0.8, A), 0, B),
+      // phones (portrait): tighter ring orbiting around the logo so videos are on screen from launch
+      radius: wide ? lerp(lerp(4.3, 4.6, A), 5.4, B) : lerp(lerp(3.3, 3.6, A), 4.6, B),
+      tilt: wide ? lerp(lerp(0.42, 0.3, A), 0, B) : lerp(lerp(0.14, 0.12, A), 0, B),
+      ringY: wide ? lerp(lerp(-1.1, -0.8, A), 0, B) : lerp(lerp(0.15, 0.6, M), 0, B),
       glow: lerp(0.3, 0.16, B),
-      dim: lerp(0.42, 1, seg(p, 0.3, 0.7)),
+      dim: wide ? lerp(0.42, 1, seg(p, 0.3, 0.7)) : lerp(0.75, 1, seg(p, 0.3, 0.7)),
       look: C,
     };
   }
@@ -336,12 +338,28 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
     raycaster.setFromCamera(ndc, camera);
     const hit = raycaster.intersectObjects(cards, false)[0];
     // ignore cards almost invisible (fogged / behind)
-    setHover(hit && hit.distance < 16 ? hit.object : null);
+    setHover(hit && hit.distance < farDist - 2 ? hit.object : null);
   }
   function setHover(m) {
     if (m === hovered) return;
     hovered = m;
     onCardHover && onCardHover(m ? m.userData.work : null);
+  }
+  let farDist = 19;
+  function cardAt(clientX, clientY) {
+    const v = new THREE.Vector2((clientX / innerWidth) * 2 - 1, -(clientY / innerHeight) * 2 + 1);
+    raycaster.setFromCamera(v, camera);
+    const hit = raycaster.intersectObjects(cards, false)[0];
+    return hit && hit.distance < farDist - 2 ? hit.object : null;
+  }
+  function tapAt(clientX, clientY) {
+    if (!state.interactive) return false;
+    const m = cardAt(clientX, clientY);
+    if (!m) return false;
+    // brief highlight on touch screens, then open
+    if (isMobile) { hovered = m; setTimeout(() => { if (hovered === m) hovered = null; }, 500); }
+    onCardClick && onCardClick(m.userData.work);
+    return true;
   }
   function click() {
     if (hovered && state.interactive) { onCardClick && onCardClick(hovered.userData.work); return true; }
@@ -407,11 +425,15 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
     layoutRing(cur.radius);
     ring.rotation.set(cur.tilt, state.spin + state.page * Math.PI * 1.5, 0);
     ring.position.y = cur.ringY;
+    // back of the ring fades out, whatever the camera distance
+    const far = Math.max(16, Math.hypot(camera.position.x, camera.position.y - ring.position.y, camera.position.z) + cur.radius * 0.9);
+    farDist = far;
     cards.forEach((m) => {
       const ud = m.userData;
       ud.hover = lerp(ud.hover, m === hovered ? 1 : 0, k * 1.4);
       m.material.uniforms.uHover.value = ud.hover;
       m.material.uniforms.uDim.value = cur.dim;
+      m.material.uniforms.uFar.value = far;
       m.material.uniforms.uTime.value = t;
       m.position.y = Math.sin(idle * 0.8 + ud.bob) * 0.08;
       const s = 1 + ud.hover * 0.12;
@@ -431,6 +453,7 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
     setPage(p) { state.page = p; },
     setInteractive(v) { state.interactive = v; if (!v) setHover(null); },
     click,
+    tapAt,
     isMobile,
   };
 }

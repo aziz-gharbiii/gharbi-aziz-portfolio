@@ -1,7 +1,7 @@
 // ============================================================
 // GHARBI AGENCY — page logic
 // ============================================================
-import { WORKS } from './data.js?v=2026.11k';
+import { WORKS } from './data.js?v=2026.11m';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -62,7 +62,7 @@ function startPage() {
 
 async function initScene() {
   try {
-    const { createScene } = await import('./scene.js?v=2026.11k');
+    const { createScene } = await import('./scene.js?v=2026.11m');
     scene = createScene({
       canvas: $('#webgl'),
       reducedMotion: false,
@@ -334,7 +334,7 @@ if (hasGsap) {
 // ------------------------------------------------------------
 $('.hero-sticky').addEventListener('click', (e) => {
   if (e.target.closest('a, button')) return;
-  scene && scene.click();
+  if (scene) scene.tapAt ? scene.tapAt(e.clientX, e.clientY) : scene.click();
 });
 
 // ------------------------------------------------------------
@@ -755,3 +755,9 @@ burger.addEventListener('click', () => {
   $('#menu').setAttribute('aria-hidden', 'false');
   lenis && lenis.stop();
 });
+
+// touch devices: adapt the hero hint
+if (!finePointer) {
+  const hint = $('.stage-hint');
+  if (hint) hint.textContent = 'Touchez une vidéo dans l\u2019anneau pour la regarder.';
+}
