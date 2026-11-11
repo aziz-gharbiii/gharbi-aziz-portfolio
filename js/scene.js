@@ -10,7 +10,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { WORKS } from './data.js?v=2026.11f';
+import { WORKS } from './data.js?v=2026.11g';
 
 const BG = 0x050506;
 const ACCENT = new THREE.Color('#d4ff3a');
@@ -34,7 +34,7 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
   renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 1.75));
   renderer.setSize(innerWidth, innerHeight, false);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 0.95;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
@@ -91,7 +91,7 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
     iridescence: 0.6,
     iridescenceIOR: 1.6,
     iridescenceThicknessRange: [180, 650],
-    envMapIntensity: 1.5,
+    envMapIntensity: 1.15,
   });
 
   const logoPivot = new THREE.Group();
@@ -271,7 +271,7 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
   if (!isMobile) {
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.32, 0.5, 0.9);
+    bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.2, 0.45, 0.96);
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
   }
@@ -359,6 +359,8 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
   addEventListener('resize', resize);
 
   // ---------- Loop ----------
+  const RING_SPEED = (Math.PI * 2) / 26;
+  let spinSpeed = RING_SPEED;
   const clock = new THREE.Clock();
   let running = true, frame = 0, raf = 0;
   document.addEventListener('visibilitychange', () => {
@@ -399,7 +401,9 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
 
     // ring
     state.velocity *= 0.92;
-    state.spin += dt * (reducedMotion ? 0.02 : 0.09 * gentle) + state.velocity;
+    // ~1 full turn every 26s, slows a little while a card is hovered so it can be clicked
+    spinSpeed += ((hovered ? 0.05 : RING_SPEED) - spinSpeed) * k;
+    state.spin += dt * spinSpeed + state.velocity;
     layoutRing(cur.radius);
     ring.rotation.set(cur.tilt, state.spin + state.page * Math.PI * 1.5, 0);
     ring.position.y = cur.ringY;
