@@ -4,15 +4,19 @@
  * Google Apps Script lié au Sheet "GHARBI AGENCY — Demandes site".
  * Déployé en Web App : exécuter en tant que "Moi", accès "Tout le monde".
  * Chaque demande → une ligne dans l'onglet "Demandes" + un email au propriétaire.
+ * Chaque clic WhatsApp → une ligne dans l'onglet "Clics WhatsApp" (avec la réf. ajoutée au message).
  */
 const SHEET_NAME = 'Demandes';
 const HEADERS = ['Reçue le', 'Type', 'Statut', 'Nom / Brand', 'WhatsApp', 'Jour', 'Moment', 'Objet / Projet', 'Business', 'Message', 'Source'];
 const STATUSES = ['Nouveau', 'Confirmé', 'Fait', 'Annulé'];
+const WA_SHEET = 'Clics WhatsApp';
+const WA_HEADERS = ['Cliqué le', 'Réf. (dans le message)', 'Bouton', 'Appareil', 'Langue', 'Page'];
 
 function doPost(e) {
   try {
     const d = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     if (d.website) return json_({ ok: true }); // honeypot: bots fill hidden fields
+    if (d.type === 'wa_click') return logWaClick_(d);
 
     const type = d.type === 'contact' ? 'Contact' : 'Rendez-vous studio';
     const r = {
@@ -49,6 +53,38 @@ function doPost(e) {
   }
 }
 
+/** Clic sur un bouton WhatsApp du site → onglet "Clics WhatsApp" (pas d'email). */
+function logWaClick_(d) {
+  const ref = clean_(d.ref, 16);
+  if (!/^GA-[A-Z0-9]{4}$/.test(ref.replace(/^'/, ''))) return json_({ ok: false, error: 'ref' });
+  const cache = CacheService.getScriptCache();
+  if (cache.get('wa_' + ref)) return json_({ ok: true, dup: true });
+  cache.put('wa_' + ref, '1', 21600);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    waSheet_().appendRow([new Date(), ref, clean_(d.button, 60), clean_(d.device, 20), clean_(d.lang, 20), clean_(d.source, 200)]);
+  } finally {
+    lock.releaseLock();
+  }
+  return json_({ ok: true });
+}
+
+function waSheet_() {
+  const ss = SpreadsheetApp.getActive();
+  let sh = ss.getSheetByName(WA_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(WA_SHEET);
+    sh.appendRow(WA_HEADERS);
+    sh.getRange(1, 1, 1, WA_HEADERS.length).setFontWeight('bold').setBackground('#25d366').setFontColor('#ffffff');
+    sh.setFrozenRows(1);
+    sh.getRange('A:A').setNumberFormat('dd/MM/yyyy HH:mm');
+    sh.setColumnWidths(1, WA_HEADERS.length, 150);
+    sh.setColumnWidth(6, 320);
+  }
+  return sh;
+}
+
 function doGet() {
   return json_({ ok: true, service: 'GHARBI AGENCY — formulaires' });
 }
@@ -56,6 +92,7 @@ function doGet() {
 /** À lancer une fois depuis l'éditeur : prépare l'onglet et demande les autorisations. */
 function setup() {
   sheet_();
+  waSheet_();
   MailApp.getRemainingDailyQuota();
 }
 

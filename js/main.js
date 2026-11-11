@@ -1,7 +1,7 @@
 // ============================================================
 // GHARBI AGENCY — page logic
 // ============================================================
-import { WORKS } from './data.js?v=2026.11i';
+import { WORKS } from './data.js?v=2026.11j';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -62,7 +62,7 @@ function startPage() {
 
 async function initScene() {
   try {
-    const { createScene } = await import('./scene.js?v=2026.11i');
+    const { createScene } = await import('./scene.js?v=2026.11j');
     scene = createScene({
       canvas: $('#webgl'),
       reducedMotion: false,
@@ -567,6 +567,42 @@ function setBusy(btn, busy, label) {
   btn.style.opacity = busy ? '0.6' : '';
   if (label) btn.querySelector('span').textContent = label;
 }
+// ------------------------------------------------------------
+// WhatsApp click tracking: every wa.me click gets a short reference
+// (e.g. "Réf. GA-7K2P") added to the pre-filled message and logged
+// in the "Clics WhatsApp" tab, so a chat can be matched to its button.
+// ------------------------------------------------------------
+const WA_DEFAULT_TEXT = 'Bonjour GHARBI AGENCY 👋';
+function waRef() {
+  const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let r = 'GA-';
+  for (let i = 0; i < 4; i++) r += abc[Math.floor(Math.random() * abc.length)];
+  return r;
+}
+function logWaClick(ref, button) {
+  const body = JSON.stringify({
+    type: 'wa_click', ref, button,
+    device: matchMedia('(pointer: coarse)').matches ? 'Mobile' : 'Ordinateur',
+    lang: navigator.language || '',
+    source: location.href.split('#')[0],
+  });
+  try {
+    fetch(FORMS_ENDPOINT, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body });
+  } catch (_) { /* never block the WhatsApp link */ }
+}
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href*="wa.me/"]');
+  if (!a) return;
+  const ref = waRef();
+  try {
+    const url = new URL(a.href);
+    const text = (url.searchParams.get('text') || WA_DEFAULT_TEXT).replace(/\n?\(Réf\. GA-[A-Z0-9]{4}\)$/, '');
+    url.searchParams.set('text', `${text}\n(Réf. ${ref})`);
+    a.href = url.toString();
+  } catch (_) {}
+  logWaClick(ref, a.dataset.wa || (a.closest('form') ? 'Formulaire' : 'Lien WhatsApp'));
+}, true);
+
 function waLink(text) {
   return `https://wa.me/21697427727?text=${encodeURIComponent(text)}`;
 }
