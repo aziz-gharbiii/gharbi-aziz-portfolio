@@ -1,7 +1,7 @@
 // ============================================================
 // GHARBI AGENCY — page logic
 // ============================================================
-import { WORKS } from './data.js?v=2026.11h';
+import { WORKS } from './data.js?v=2026.11i';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -62,13 +62,13 @@ function startPage() {
 
 async function initScene() {
   try {
-    const { createScene } = await import('./scene.js?v=2026.11h');
+    const { createScene } = await import('./scene.js?v=2026.11i');
     scene = createScene({
       canvas: $('#webgl'),
       reducedMotion: false,
       gentle,
       onProgress: (p) => { targetPct = Math.max(targetPct, p * 95); },
-      onReady: startPage,
+      onReady: () => { startPage(); if (hasGsap) ScrollTrigger.refresh(); },
       onCardHover: (w) => setCursorPlay(!!w, w ? w.label : ''),
       onCardClick: (w) => openVideo(WORKS.indexOf(w)),
     });
@@ -213,6 +213,8 @@ if (hasGsap) {
     const ct = seg(innerHeight * 0.7 - contactEl.getBoundingClientRect().top, 0, innerHeight * 0.6);
     const gl = 1 - out * 0.9 + ct * 0.2;
     glCanvas.style.setProperty('--gl', gl.toFixed(3));
+    // 3D cards are clickable only while the hero is on screen (fixes deep links like #studio)
+    if (scene) scene.setInteractive(heroBottom > innerHeight * 0.6);
   }
   ScrollTrigger.create({ start: 0, end: 'max', onUpdate: updateBackdrop, onRefresh: updateBackdrop });
   addEventListener('resize', updateBackdrop);
