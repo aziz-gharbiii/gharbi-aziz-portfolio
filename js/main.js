@@ -1,7 +1,7 @@
 // ============================================================
 // GHARBI AGENCY — page logic
 // ============================================================
-import { WORKS } from './data.js?v=2026.11e';
+import { WORKS } from './data.js?v=2026.11f';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -62,7 +62,7 @@ function startPage() {
 
 async function initScene() {
   try {
-    const { createScene } = await import('./scene.js?v=2026.11e');
+    const { createScene } = await import('./scene.js?v=2026.11f');
     scene = createScene({
       canvas: $('#webgl'),
       reducedMotion: false,
@@ -578,6 +578,74 @@ $('#contact-form').addEventListener('submit', (e) => {
   note.classList.add('ok');
   f.reset();
 });
+
+// ------------------------------------------------------------
+// Studio booking (La Manouba) → WhatsApp
+// ------------------------------------------------------------
+(() => {
+  const form = $('#booking-form');
+  if (!form) return;
+  const daysBox = $('#booking-days');
+  const DAYS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+  const DAYS_FULL = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  const MONTHS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  const MONTHS_FULL = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  const out = [];
+  const d = new Date();
+  d.setHours(12, 0, 0, 0);
+  d.setDate(d.getDate() + 1); // from tomorrow
+  while (out.length < 12) {
+    if (d.getDay() !== 0) out.push(new Date(d)); // no Sundays
+    d.setDate(d.getDate() + 1);
+  }
+  daysBox.innerHTML = out.map((day, i) => `
+    <label class="day">
+      <input type="radio" name="day" value="${DAYS_FULL[day.getDay()]} ${day.getDate()} ${MONTHS_FULL[day.getMonth()]}" ${i === 0 ? 'checked' : ''} />
+      <span><small>${DAYS[day.getDay()]}</small><b>${day.getDate()}</b><em>${MONTHS[day.getMonth()]}</em></span>
+    </label>`).join('');
+  // horizontal wheel → scroll the day strip
+  daysBox.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && daysBox.scrollWidth > daysBox.clientWidth) {
+      e.preventDefault(); e.stopPropagation();
+      daysBox.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+  daysBox.setAttribute('data-lenis-prevent', '');
+
+  const cta = $('#booking-cta');
+  const sync = () => {
+    const day = form.querySelector('[name="day"]:checked').value;
+    const slot = form.querySelector('[name="slot"]:checked').value.toLowerCase();
+    cta.textContent = `Demander ${day} · ${slot}`;
+  };
+  form.addEventListener('change', sync);
+  sync();
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = form.name.value.trim();
+    const wa = form.whatsapp.value.trim();
+    let ok = true;
+    [['name', name], ['whatsapp', wa]].forEach(([k, v]) => {
+      form[k].closest('.field').classList.toggle('is-error', !v);
+      if (!v) ok = false;
+    });
+    const note = $('#booking-note');
+    if (!ok) { note.textContent = '⚠️ Ajoutez votre nom et votre WhatsApp.'; note.classList.remove('ok'); return; }
+    const text = [
+      'Bonjour GHARBI AGENCY 👋',
+      'Je souhaite un rendez-vous au studio (La Manouba).',
+      `📅 Jour : ${form.querySelector('[name="day"]:checked').value}`,
+      `🕒 Moment : ${form.querySelector('[name="slot"]:checked').value}`,
+      `🎯 Objet : ${form.querySelector('[name="topic"]:checked').value}`,
+      `👤 Nom / Brand : ${name}`,
+      `📱 WhatsApp : ${wa}`,
+    ].join('\n');
+    window.open(`https://wa.me/21697427727?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    note.textContent = '✅ WhatsApp ouvert — envoyez le message, on confirme l\'heure et l\'adresse.';
+    note.classList.add('ok');
+  });
+})();
 
 // ------------------------------------------------------------
 // Mobile menu

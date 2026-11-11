@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300..700&family=JetBrains+Mono:wght@400;500&family=Alexandria:wght@400;600;800;900&display=swap" rel="stylesheet" />
 
   <link rel="preload" href="media/gh-logo.svg" as="fetch" crossorigin />
-  <link rel="stylesheet" href="style.css?v=2026.11e" />
+  <link rel="stylesheet" href="style.css?v=2026.11f" />
 
   <script type="importmap">
   {
@@ -28,6 +28,9 @@
       "three/addons/": "./vendor/three/addons/"
     }
   }
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"ProfessionalService","name":"GHARBI AGENCY","description":"Creatives Meta Ads, UGC, VSL et montage vidéo pour marques e-commerce.","founder":{"@type":"Person","name":"Gharbi Aziz"},"telephone":"+21697427727","address":{"@type":"PostalAddress","addressLocality":"La Manouba","addressCountry":"TN"},"areaServed":"TN","sameAs":["https://www.instagram.com/gharbi_editor/"]}
   </script>
 </head>
 <body class="is-loading">
@@ -67,6 +70,7 @@
       <a href="#services">Services</a>
       <a href="#work">Portfolio</a>
       <a href="#proof">Résultats</a>
+      <a href="#studio">Studio</a>
     </nav>
     <a href="#contact" class="nav-cta magnetic"><span>Démarrer un projet</span><i>→</i></a>
     <button class="nav-burger" id="nav-burger" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button>
@@ -78,7 +82,8 @@
       <a href="#services" data-i="02">Services</a>
       <a href="#work" data-i="03">Portfolio</a>
       <a href="#proof" data-i="04">Résultats</a>
-      <a href="#contact" data-i="05">Contact</a>
+      <a href="#studio" data-i="05">Studio</a>
+      <a href="#contact" data-i="06">Contact</a>
     </nav>
     <div class="menu-foot">
       <a href="https://wa.me/21697427727" target="_blank" rel="noreferrer">WhatsApp ↗</a>
@@ -357,11 +362,92 @@
       </div>
     </section>
 
+    <!-- ========== STUDIO / RENDEZ-VOUS ========== -->
+    <section class="section studio" id="studio">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow"><span class="idx">06</span> Studio · La Manouba</p>
+          <h2 class="title split">On se voit <em>au studio&nbsp;?</em></h2>
+          <p class="studio-ar" dir="rtl" lang="ar">عندنا local في منوبة — تعدّى نتلاقاو، نحكيو على المنتج متاعك ونحضّرو الـ strategy مع بعضنا.</p>
+        </div>
+
+        <div class="studio-grid">
+          <div class="studio-map tilt">
+            <div class="map-frame">
+              <iframe title="GHARBI AGENCY — La Manouba" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps?q=La+Manouba,+Tunisie&z=14&output=embed"></iframe>
+              <div class="map-pin" aria-hidden="true"><span></span><img src="media/gh-logo.svg" alt="" /></div>
+            </div>
+            <div class="map-info">
+              <div>
+                <small>Adresse</small>
+                <b>La Manouba, Tunisie</b>
+                <span>Adresse exacte envoyée sur WhatsApp à la confirmation</span>
+              </div>
+              <a class="map-open magnetic" href="https://www.google.com/maps/search/?api=1&query=La+Manouba+Tunisie" target="_blank" rel="noreferrer">Itinéraire ↗</a>
+            </div>
+            <ul class="studio-perks">
+              <li><b>Sur rendez-vous</b><small>Rencontre 100% dédiée à votre marque</small></li>
+              <li><b>Brief &amp; stratégie</b><small>Produit, audience, angles créatifs</small></li>
+              <li><b>Tournage UGC</b><small>Possible sur place selon le projet</small></li>
+            </ul>
+          </div>
+
+          <form class="form booking" id="booking-form" novalidate>
+            <div class="booking-head">
+              <span class="live-dot"></span>
+              <div>
+                <b>Réserver un rendez-vous</b>
+                <small dir="rtl" lang="ar">احجز موعدك في الـ studio</small>
+              </div>
+            </div>
+
+            <fieldset class="field">
+              <legend>Choisissez un jour</legend>
+              <div class="days" id="booking-days" role="radiogroup" aria-label="Jour du rendez-vous"></div>
+            </fieldset>
+
+            <fieldset class="field">
+              <legend>Moment préféré</legend>
+              <div class="seg seg-3">
+                <label><input type="radio" name="slot" value="Matin" checked /><span>Matin<small dir="rtl" lang="ar">الصباح</small></span></label>
+                <label><input type="radio" name="slot" value="Après-midi" /><span>Après-midi<small dir="rtl" lang="ar">العشية</small></span></label>
+                <label><input type="radio" name="slot" value="Fin de journée" /><span>Fin de journée<small dir="rtl" lang="ar">آخر النهار</small></span></label>
+              </div>
+            </fieldset>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="b-name">Nom / Brand</label>
+                <input id="b-name" type="text" name="name" placeholder="Votre nom" required autocomplete="name" />
+              </div>
+              <div class="field">
+                <label for="b-wa">WhatsApp</label>
+                <input id="b-wa" type="tel" name="whatsapp" placeholder="+216 00 000 000" required autocomplete="tel" />
+              </div>
+            </div>
+
+            <fieldset class="field">
+              <legend>Objet du rendez-vous</legend>
+              <div class="seg seg-3">
+                <label><input type="radio" name="topic" value="Découverte & devis" checked /><span>Découverte<small>&amp; devis</small></span></label>
+                <label><input type="radio" name="topic" value="Brief créatif" /><span>Brief<small>créatif</small></span></label>
+                <label><input type="radio" name="topic" value="Tournage UGC" /><span>Tournage<small>UGC</small></span></label>
+              </div>
+            </fieldset>
+
+            <button type="submit" class="btn btn-solid btn-block magnetic"><span id="booking-cta">Demander ce créneau sur WhatsApp</span></button>
+            <p class="form-note" id="booking-note">On confirme l'heure exacte et l'adresse sur WhatsApp.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
     <!-- ========== CONTACT ========== -->
     <section class="section contact" id="contact">
       <div class="wrap contact-grid">
         <div class="contact-copy">
-          <p class="eyebrow"><span class="idx">06</span> Contact</p>
+          <p class="eyebrow"><span class="idx">07</span> Contact</p>
           <h2 class="title contact-title split">Prêt à <em>scaler</em> votre marque&nbsp;?</h2>
           <p class="lead">Remplissez le formulaire — on vous répond sur WhatsApp en moins de <strong>24 heures</strong>.</p>
           <div class="contact-links">
@@ -420,7 +506,7 @@
     <div class="wrap footer-top">
       <p>Des creatives Meta Ads qui transforment vos produits en résultats mesurables.</p>
       <nav aria-label="Pied de page">
-        <a href="#about">Agence</a><a href="#services">Services</a><a href="#work">Portfolio</a><a href="#contact">Contact</a>
+        <a href="#about">Agence</a><a href="#services">Services</a><a href="#work">Portfolio</a><a href="#studio">Studio Manouba</a><a href="#contact">Contact</a>
         <a href="https://wa.me/21697427727" target="_blank" rel="noreferrer">WhatsApp ↗</a>
         <a href="https://www.instagram.com/gharbi_editor/?hl=en" target="_blank" rel="noreferrer">Instagram ↗</a>
       </nav>
@@ -428,7 +514,7 @@
     <div class="footer-word" aria-hidden="true">GHARBI<em>agency</em></div>
     <div class="wrap footer-bottom">
       <span>© 2026 GHARBI AGENCY — Gharbi Aziz</span>
-      <span>Tunisia 🇹🇳</span>
+      <span>Studio · La Manouba, Tunisie 🇹🇳</span>
       <a href="#top">Retour en haut ↑</a>
     </div>
   </footer>
@@ -470,6 +556,6 @@
   <script src="vendor/gsap.min.js" defer></script>
   <script src="vendor/ScrollTrigger.min.js" defer></script>
   <script src="vendor/lenis.min.js" defer></script>
-  <script type="module" src="js/main.js?v=2026.11e"></script>
+  <script type="module" src="js/main.js?v=2026.11f"></script>
 </body>
 </html>
