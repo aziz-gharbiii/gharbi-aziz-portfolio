@@ -62,7 +62,7 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 /* ---------- Stage layers ---------- */
 .webgl {
   position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0;
-  opacity: var(--gl); transition: opacity 0.6s linear;
+  opacity: var(--gl); transition: opacity 0.25s linear;
 }
 .no-webgl .webgl { display: none; }
 .no-webgl body, body.no-webgl {

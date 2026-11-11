@@ -116,9 +116,10 @@ $$('.split').forEach((el) => {
     [...node.childNodes].forEach((n) => {
       if (n.nodeType === 3) {
         const frag = document.createDocumentFragment();
-        n.textContent.split(/(\s+)/).forEach((part) => {
+        // split on normal whitespace only — keep &nbsp; glued (e.g. "marque ?")
+        n.textContent.split(/([ \t\n\r]+)/).forEach((part) => {
           if (!part) return;
-          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+          if (/^[ \t\n\r]+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
           const w = document.createElement('span'); w.className = 'w';
           const s = document.createElement('span'); s.textContent = part;
           w.appendChild(s); frag.appendChild(w);
@@ -199,15 +200,19 @@ if (hasGsap) {
     onToggle: (self) => scene && scene.setInteractive(self.isActive),
   });
 
-  // WebGL backdrop dims after the hero, comes back a bit for contact
-  ScrollTrigger.create({
-    trigger: '#hero', start: 'bottom bottom', end: 'bottom 30%',
-    onUpdate: (self) => { glCanvas.style.setProperty('--gl', String(1 - self.progress * 0.82)); },
-  });
-  ScrollTrigger.create({
-    trigger: '#contact', start: 'top 70%', end: 'top 10%',
-    onUpdate: (self) => { glCanvas.style.setProperty('--gl', String(0.18 + self.progress * 0.35)); },
-  });
+  // WebGL backdrop: full in the hero, a faint ambience behind content,
+  // slightly back up near contact. One function computed from positions → no trigger fights.
+  const heroEl = $('#hero');
+  const contactEl = $('#contact');
+  function updateBackdrop() {
+    const heroBottom = heroEl.getBoundingClientRect().bottom;      // px from viewport top
+    const out = seg(innerHeight - heroBottom, 0, innerHeight * 0.7); // 0 in hero → 1 once past
+    const ct = seg(innerHeight * 0.7 - contactEl.getBoundingClientRect().top, 0, innerHeight * 0.6);
+    const gl = 1 - out * 0.9 + ct * 0.2;
+    glCanvas.style.setProperty('--gl', gl.toFixed(3));
+  }
+  ScrollTrigger.create({ start: 0, end: 'max', onUpdate: updateBackdrop, onRefresh: updateBackdrop });
+  addEventListener('resize', updateBackdrop);
   ScrollTrigger.create({
     trigger: '.brands', start: 'top bottom', endTrigger: 'body', end: 'bottom bottom',
     onUpdate: (self) => scene && scene.setPage(self.progress),
