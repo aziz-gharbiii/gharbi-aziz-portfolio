@@ -1,7 +1,7 @@
 // ============================================================
 // GHARBI AGENCY — page logic
 // ============================================================
-import { WORKS } from './data.js?v=2026.11d';
+import { WORKS } from './data.js?v=2026.11e';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -10,7 +10,9 @@ const seg = (p, a, b) => clamp01((p - a) / (b - a));
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
-if (reduced) document.documentElement.classList.add('reduced');
+// Many Windows/macOS setups report reduced motion just because "animation effects" are off.
+// We keep the site alive but calmer: slower ambient motion, no grain, no scroll boosts on the 3D.
+const gentle = reduced ? 0.6 : 1;
 
 const { gsap, ScrollTrigger, Lenis } = window;
 const hasGsap = !!(gsap && ScrollTrigger);
@@ -60,10 +62,11 @@ function startPage() {
 
 async function initScene() {
   try {
-    const { createScene } = await import('./scene.js?v=2026.11d');
+    const { createScene } = await import('./scene.js?v=2026.11e');
     scene = createScene({
       canvas: $('#webgl'),
-      reducedMotion: reduced,
+      reducedMotion: false,
+      gentle,
       onProgress: (p) => { targetPct = Math.max(targetPct, p * 95); },
       onReady: startPage,
       onCardHover: (w) => setCursorPlay(!!w, w ? w.label : ''),
@@ -83,7 +86,7 @@ setTimeout(startPage, 8000); // hard safety net
 // Smooth scroll (Lenis) + ScrollTrigger
 // ------------------------------------------------------------
 let lenis = null;
-if (Lenis && !reduced) {
+if (Lenis) {
   lenis = new Lenis({ lerp: 0.09, smoothWheel: true, wheelMultiplier: 0.95 });
   if (hasGsap) {
     lenis.on('scroll', ScrollTrigger.update);
@@ -98,7 +101,7 @@ function scrollToTarget(target) {
   const el = typeof target === 'string' ? $(target) : target;
   if (!el) return;
   if (lenis) lenis.scrollTo(el, { offset: 0, duration: 1.6 });
-  else el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+  else el.scrollIntoView({ behavior: 'smooth' });
 }
 $$('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
   const id = a.getAttribute('href');
@@ -172,7 +175,7 @@ function heroUpdate(p) {
 // ------------------------------------------------------------
 function countUp(el) {
   const target = +el.dataset.count;
-  if (reduced || !hasGsap) { el.textContent = target; return; }
+  if (!hasGsap) { el.textContent = target; return; }
   const o = { v: 0 };
   gsap.to(o, { v: target, duration: 1.8, ease: 'power3.out', onUpdate: () => { el.textContent = Math.round(o.v); } });
 }
@@ -181,7 +184,7 @@ function countUp(el) {
 // Intro (after loader)
 // ------------------------------------------------------------
 function introAnimation() {
-  if (!hasGsap || reduced) return;
+  if (!hasGsap) return;
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
   tl.from('.nav', { y: -80, opacity: 0, duration: 1.2 }, 0)
     .from('.hero-ar .line > span', { yPercent: 110, duration: 1.4, stagger: 0.12 }, 0.1)
@@ -259,18 +262,36 @@ if (hasGsap) {
     scrollTrigger: { trigger: '.footer', start: 'top bottom', end: 'bottom bottom', scrub: true },
   });
 
-  // Marquees with scroll-velocity boost
-  $$('.marquee-track').forEach((track, i) => {
-    const dir = i % 2 ? 1 : -1;
-    const tween = gsap.fromTo(track, { xPercent: dir < 0 ? 0 : -50 }, { xPercent: dir < 0 ? -50 : 0, duration: 32, ease: 'none', repeat: -1 });
-    if (reduced) tween.pause();
-    ScrollTrigger.create({
-      trigger: track, start: 'top bottom', end: 'bottom top',
-      onUpdate: (self) => {
-        const v = Math.min(Math.abs(self.getVelocity()) / 400, 5);
-        gsap.to(tween, { timeScale: 1 + v, duration: 0.2, overwrite: true });
-        gsap.to(tween, { timeScale: 1, duration: 1.2, delay: 0.2 });
-      },
+  // Marquees: always moving, speed up with scroll velocity, flip direction with scroll direction,
+  // slow down on hover. Rows alternate direction.
+  const marquees = $$('.marquee-track').map((track, i) => ({
+    track, base: i % 2 ? 1 : -1, x: 0, boost: 0, hover: 1, speed: track.closest('.big-marquee') ? 2.2 : 3.2,
+  }));
+  marquees.forEach((m) => {
+    const box = m.track.parentElement;
+    box.addEventListener('pointerenter', () => { m.hoverTarget = 0.25; });
+    box.addEventListener('pointerleave', () => { m.hoverTarget = 1; });
+  });
+  let scrollDir = 1, scrollVel = 0;
+  const progressBar = $('#scroll-progress');
+  ScrollTrigger.create({
+    start: 0, end: 'max',
+    onUpdate: (self) => {
+      scrollDir = self.direction; scrollVel = Math.abs(self.getVelocity());
+      progressBar.style.transform = `scaleX(${self.progress})`;
+    },
+  });
+  gsap.ticker.add((_t, dtMs) => {
+    const dt = Math.min(dtMs, 50) / 1000;
+    scrollVel *= 0.9;
+    marquees.forEach((m) => {
+      m.hover += ((m.hoverTarget ?? 1) - m.hover) * 0.08;
+      m.boost += (Math.min(scrollVel / 300, 6) - m.boost) * 0.1;
+      // % of the track width per second (track holds two copies → wrap at 50%)
+      m.x += m.base * scrollDir * (m.speed * gentle + m.boost * 2.4) * m.hover * dt;
+      if (m.x <= -50) m.x += 50;
+      if (m.x > 0) m.x -= 50;
+      m.track.style.transform = `translate3d(${m.x}%,0,0)`;
     });
   });
 
@@ -325,7 +346,7 @@ function setCursorPlay(on, label = 'Play') {
   cursor.classList.toggle('is-play', on);
   cursorLabel.textContent = on ? (label ? `▶ ${label}` : 'Play') : 'Play';
 }
-if (finePointer && !reduced) {
+if (finePointer) {
   document.body.classList.add('has-cursor');
   let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
   addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
@@ -348,7 +369,7 @@ if (finePointer && !reduced) {
 // ------------------------------------------------------------
 // Magnetic buttons, tilt, spotlight
 // ------------------------------------------------------------
-if (finePointer && !reduced) {
+if (finePointer) {
   $$('.magnetic').forEach((el) => {
     el.addEventListener('pointermove', (e) => {
       const r = el.getBoundingClientRect();

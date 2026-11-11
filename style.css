@@ -269,9 +269,11 @@ main, .footer { position: relative; z-index: 2; }
 .brands { position: relative; padding: 56px 0 40px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(5, 5, 6, 0.6); backdrop-filter: blur(6px); }
 .brands .eyebrow { display: flex; justify-content: center; margin-bottom: 28px; }
 .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
-.marquee-track { display: flex; align-items: center; gap: clamp(28px, 4vw, 64px); width: max-content; will-change: transform; }
-.marquee-track span { font: 700 clamp(32px, 5vw, 64px)/1 var(--display); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.45); transition: color 0.3s; }
-.marquee-track span:hover { color: var(--ink); -webkit-text-stroke-color: transparent; }
+.marquee-track { display: flex; align-items: center; gap: clamp(28px, 4vw, 64px); width: max-content; will-change: transform; padding-right: clamp(28px, 4vw, 64px); }
+.marquee-track span { font: 700 clamp(32px, 5vw, 64px)/1 var(--display); letter-spacing: -0.04em; color: rgba(243, 243, 238, 0.2); transition: color 0.35s, text-shadow 0.35s; white-space: nowrap; }
+.brands-row-2 .marquee-track span { font: 400 clamp(26px, 3.6vw, 46px)/1 var(--serif); font-style: italic; letter-spacing: -0.01em; color: rgba(243, 243, 238, 0.32); }
+.marquee-track span:hover { color: var(--ink); text-shadow: 0 0 30px rgba(212, 255, 58, 0.35); }
+.marquee + .marquee { margin-top: 18px; }
 .marquee-track i { font-style: normal; color: var(--accent); font-size: 20px; }
 
 /* ============================================================
@@ -410,7 +412,7 @@ main, .footer { position: relative; z-index: 2; }
 .num h4 { margin: 18px 0 8px; font: 500 12px var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
 .num p { color: var(--ink-3); font-size: 14px; max-width: 26ch; }
 .big-marquee { margin-top: clamp(80px, 10vw, 140px); transform: rotate(-3deg); background: var(--accent); color: var(--accent-ink); padding: 18px 0; overflow: hidden; }
-.big-marquee .marquee-track span { color: var(--accent-ink); -webkit-text-stroke: 0; font-size: clamp(40px, 6vw, 88px); text-transform: uppercase; }
+.big-marquee .marquee-track span { color: var(--accent-ink); font-size: clamp(40px, 6vw, 88px); text-transform: uppercase; }
 .big-marquee .marquee-track i { color: var(--accent-ink); font-size: 32px; }
 
 /* ============================================================
@@ -560,7 +562,7 @@ main, .footer { position: relative; z-index: 2; }
 
 /* ---------- Reveal ---------- */
 .reveal { opacity: 0; transform: translateY(40px); }
-.no-js .reveal, .reduced .reveal { opacity: 1; transform: none; }
+.no-js .reveal { opacity: 1; transform: none; }
 
 /* ============================================================
    RESPONSIVE
@@ -616,6 +618,9 @@ main, .footer { position: relative; z-index: 2; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
-  .grain { display: none; }
+  .grain { animation: none; }
 }
+
+/* ---------- Scroll progress ---------- */
+.scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 70; pointer-events: none; }
+.scroll-progress i { display: block; height: 100%; background: linear-gradient(90deg, var(--violet), var(--accent)); transform-origin: left; transform: scaleX(0); }

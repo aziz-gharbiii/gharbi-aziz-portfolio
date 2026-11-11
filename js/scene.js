@@ -10,7 +10,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { WORKS } from './data.js?v=2026.11d';
+import { WORKS } from './data.js?v=2026.11e';
 
 const BG = 0x050506;
 const ACCENT = new THREE.Color('#d4ff3a');
@@ -20,7 +20,7 @@ const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const seg = (p, a, b) => clamp01((p - a) / (b - a));
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-export function createScene({ canvas, onProgress, onReady, onCardHover, onCardClick, reducedMotion = false }) {
+export function createScene({ canvas, onProgress, onReady, onCardHover, onCardClick, reducedMotion = false, gentle = 1 }) {
   const isMobile = matchMedia('(max-width: 768px), (pointer: coarse)').matches;
 
   // ---------- Renderer ----------
@@ -384,7 +384,7 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
     camera.lookAt(0, lerp(cur.camY * 0.15, 0.2, cur.look), lerp(cur.logoZ, -5, cur.look));
 
     // logo
-    const idle = reducedMotion ? 0 : t;
+    const idle = reducedMotion ? 0 : t * gentle;
     logoPivot.rotation.y = Math.sin(idle * 0.45) * 0.3 + cur.spin + mx * 0.35;
     logoPivot.rotation.x = Math.sin(idle * 0.6) * 0.06 - my * 0.18;
     logoPivot.position.y = Math.sin(idle * 0.9) * 0.06;
@@ -399,7 +399,7 @@ export function createScene({ canvas, onProgress, onReady, onCardHover, onCardCl
 
     // ring
     state.velocity *= 0.92;
-    state.spin += dt * (reducedMotion ? 0.02 : 0.09) + state.velocity;
+    state.spin += dt * (reducedMotion ? 0.02 : 0.09 * gentle) + state.velocity;
     layoutRing(cur.radius);
     ring.rotation.set(cur.tilt, state.spin + state.page * Math.PI * 1.5, 0);
     ring.position.y = cur.ringY;
