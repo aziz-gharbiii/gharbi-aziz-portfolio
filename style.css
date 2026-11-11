@@ -706,3 +706,50 @@ main, .footer { position: relative; z-index: 2; }
 .form-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .form-note b { color: var(--ink); }
 .btn:disabled { cursor: progress; }
+
+/* ============================================================
+   MOBILE HARDENING
+   ============================================================ */
+html, body { overflow-x: clip; }
+/* grid children must be allowed to shrink below their content width */
+.about-grid > *, .services-grid > *, .proof-grid > *, .studio-grid > *, .contact-grid > *,
+.numbers-grid > *, .process-steps > *, .work-grid > * { min-width: 0; }
+.metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.metrics small { overflow-wrap: anywhere; }
+img { height: auto; }
+a, button, label, .card { -webkit-tap-highlight-color: transparent; }
+
+@media (max-width: 720px) {
+  .hero { height: 300vh; }
+  .section { padding: 80px 0; }
+  .section-head { margin-bottom: 36px; }
+  .title { font-size: clamp(32px, 9.4vw, 44px); max-width: none; }
+  /* filters: one scrollable row instead of wrapping */
+  .filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; border-radius: 999px; -webkit-overflow-scrolling: touch; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter { flex: 0 0 auto; padding: 9px 14px; white-space: nowrap; }
+  .proof-card { padding: 16px; }
+  .proof-card blockquote { font-size: 15px; }
+  .metrics div { padding: 12px; }
+  .metrics b { font-size: 24px; }
+  .process { margin-top: 72px; }
+  .process-title { font-size: 30px; }
+  .studio-map { padding: 10px; }
+  .map-frame { min-height: 260px; }
+  .booking-head b { font-size: 19px; }
+  .contact-title { font-size: clamp(38px, 11vw, 52px); }
+  .contact-link b { font-size: 19px; }
+  .footer-word { margin: 32px 0 18px; }
+  .footer-top nav { gap: 6px 16px; }
+  .big-marquee { margin-top: 64px; }
+  .num-big { font-size: clamp(52px, 15vw, 72px); }
+  /* keep the floating WhatsApp button clear of form buttons */
+  .wa-float { width: 50px; height: 50px; }
+  .wa-float svg { width: 25px; height: 25px; }
+}
+@media (max-width: 380px) {
+  .hero-actions { flex-direction: column; }
+  .seg { grid-template-columns: 1fr 1fr; }
+  .seg-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .seg-3 span { padding: 10px 4px; font-size: 12px; }
+}
