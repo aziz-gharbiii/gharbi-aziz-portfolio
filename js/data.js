@@ -13,6 +13,7 @@ export const CATEGORIES = {
 
 export const WORKS = [
   // — Nouveautés (novembre 2026) —
+  { id: 'mizu_hook1',        cat: 'ugc',     title: 'Mizu — Hook 1',                   featured: true },
   { id: 'reine_bio_a2h2',    cat: 'vsl',     title: 'La Reine Bio — Angle 2 · Hook 2', featured: true },
   { id: 'miswak_story',      cat: 'vsl',     title: 'Miswak Smile — Storytelling',     featured: true },
   { id: 'angle5_hook1',      cat: 'mashups', title: 'Mousse Violette — Angle 5' },
