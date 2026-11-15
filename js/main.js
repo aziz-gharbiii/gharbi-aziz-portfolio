@@ -1,7 +1,7 @@
 // ============================================================
 // GHARBI AGENCY — page logic
 // ============================================================
-import { WORKS } from './data.js?v=2026.11n';
+import { WORKS } from './data.js?v=2026.11p';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -31,6 +31,7 @@ grid.innerHTML = WORKS.map((w, i) => `
     <div class="card-meta"><h3>${w.title}</h3><span class="n">${String(i + 1).padStart(2, '0')}</span></div>
   </article>`).join('');
 $('#count-all').textContent = WORKS.length;
+$$('[data-works-count]').forEach((el) => { el.textContent = WORKS.length; });
 
 // ------------------------------------------------------------
 // Loader + 3D scene
@@ -62,7 +63,7 @@ function startPage() {
 
 async function initScene() {
   try {
-    const { createScene } = await import('./scene.js?v=2026.11n');
+    const { createScene } = await import('./scene.js?v=2026.11p');
     scene = createScene({
       canvas: $('#webgl'),
       reducedMotion: false,

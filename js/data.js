@@ -12,6 +12,13 @@ export const CATEGORIES = {
 };
 
 export const WORKS = [
+  // — Nouveautés (novembre 2026) —
+  { id: 'reine_bio_a2h2',    cat: 'vsl',     title: 'La Reine Bio — Angle 2 · Hook 2', featured: true },
+  { id: 'miswak_story',      cat: 'vsl',     title: 'Miswak Smile — Storytelling',     featured: true },
+  { id: 'angle5_hook1',      cat: 'mashups', title: 'Mousse Violette — Angle 5' },
+  { id: 'reine_bio_a1h2',    cat: 'vsl',     title: 'La Reine Bio — Angle 1 · Hook 2' },
+  { id: 'ceinture_a2',       cat: 'mashups', title: 'Ceinture Chauffante — Angle 2' },
+  { id: 'reine_bio_calmo',   cat: 'vsl',     title: 'La Reine Bio — Calmo+' },
   { id: 'ugc_hedi',          cat: 'ugc',     title: 'Hedi — Hook UGC',          featured: true },
   { id: 'dhekra_kabr',       cat: 'ugc',     title: 'Dhekra — Kbar' },
   { id: 'ghiras_hook2',      cat: 'ugc',     title: 'Ghiras — Hook 2' },
